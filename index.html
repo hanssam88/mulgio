@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapping Hub Presentations</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container { max-width: 640px; width: 100%; padding: 2rem; }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; color: #f8fafc; }
+    .subtitle { color: #94a3b8; margin-bottom: 2.5rem; font-size: 0.95rem; }
+    .card {
+      display: block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; text-decoration: none;
+      color: #e2e8f0; transition: all 0.2s ease;
+    }
+    .card:hover { background: rgba(255,255,255,0.1); border-color: #3b82f6; transform: translateY(-2px); }
+    .card-num { font-size: 0.75rem; color: #3b82f6; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .card-title { font-size: 1.1rem; font-weight: 600; color: #f1f5f9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mapping Hub</h1>
+    <p class="subtitle">프레젠테이션 목록</p>
+    <a class="card" href="presentation_01_candidate_parallel.html">
+      <div class="card-num">Presentation 01</div>
+      <div class="card-title">Candidate 병렬 조회 성능 개선</div>
+    </a>
+    <a class="card" href="presentation_02_audit_speed_v2.html">
+      <div class="card-num">Presentation 02</div>
+      <div class="card-title">감사 속도 최대화 v2</div>
+    </a>
+    <a class="card" href="dryrun-speed-improvement.html">
+      <div class="card-num">Presentation 03</div>
+      <div class="card-title">드라이런 속도 개선 핵심 3가지</div>
+    </a>
+  </div>
+</body>
+</html>
