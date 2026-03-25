@@ -1,0 +1,3236 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunscreen Market Analysis: Korea vs USA 2025</title>
+    <style>
+      /* ==========================================================================
+   1. CSS CUSTOM PROPERTIES — Complete Color Palette
+   ========================================================================== */
+
+      :root {
+        /* --- Core Palette --- */
+        --bg: #0f1a2e; /* Deep navy background */
+        --bg-secondary: #1b2a4a; /* Card / table background */
+        --bg-tertiary: #243558; /* Elevated surfaces, hover states */
+        --bg-slide: #0f1a2e; /* Slide canvas */
+
+        /* --- Accent (Gold) --- */
+        --accent: #c5a55a; /* Primary gold */
+        --accent-secondary: #d4ba7a; /* Lighter gold for hover/secondary */
+        --accent-dim: rgba(197, 165, 90, 0.15); /* Gold tint for backgrounds */
+        --accent-border: rgba(197, 165, 90, 0.3); /* Gold-tinted borders */
+
+        /* --- Text --- */
+        --text: #e8e6e1; /* Primary text (warm white) */
+        --text-secondary: #8a92a6; /* Muted / caption text */
+        --text-inverse: #0f1a2e; /* Text on gold backgrounds */
+        --text-on-accent: #0f1a2e; /* Text on accent buttons */
+
+        /* --- Semantic --- */
+        --positive: #3ec97a; /* Green — opportunities, low risk */
+        --positive-bg: rgba(62, 201, 122, 0.12);
+        --negative: #e85454; /* Red — threats, high risk */
+        --negative-bg: rgba(232, 84, 84, 0.12);
+        --neutral: #e8a838; /* Amber — medium risk, neutral */
+        --neutral-bg: rgba(232, 168, 56, 0.12);
+
+        /* --- Borders & Dividers --- */
+        --border: rgba(255, 255, 255, 0.08);
+        --border-strong: rgba(255, 255, 255, 0.15);
+        --divider: rgba(197, 165, 90, 0.2);
+
+        /* --- Shadows --- */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+        --shadow-gold: 0 4px 20px rgba(197, 165, 90, 0.15);
+
+        /* ==========================================================================
+     2. TYPOGRAPHY SCALE — clamp() responsive
+     ========================================================================== */
+
+        /* Font Families — system stack, no CDN */
+        --font-primary:
+          "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        --font-heading:
+          "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        --font-mono:
+          "Cascadia Code", "SF Mono", "Consolas", "Liberation Mono", monospace;
+        --font-korean:
+          "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+
+        /* Font Sizes — clamp(min, preferred, max) */
+        --fs-slide-title: clamp(1.75rem, 2.5vw + 0.5rem, 2.75rem); /* 28–44px */
+        --fs-subtitle: clamp(1.125rem, 1.5vw + 0.3rem, 1.625rem); /* 18–26px */
+        --fs-body: clamp(0.875rem, 1vw + 0.2rem, 1.0625rem); /* 14–17px */
+        --fs-data-hero: clamp(2rem, 3.5vw + 0.5rem, 3.5rem); /* 32–56px */
+        --fs-data-label: clamp(
+          0.75rem,
+          0.8vw + 0.2rem,
+          0.9375rem
+        ); /* 12–15px */
+        --fs-footnote: clamp(
+          0.625rem,
+          0.6vw + 0.15rem,
+          0.8125rem
+        ); /* 10–13px */
+        --fs-badge: clamp(0.625rem, 0.6vw + 0.1rem, 0.75rem); /* 10–12px */
+        --fs-table: clamp(0.75rem, 0.85vw + 0.15rem, 0.9375rem); /* 12–15px */
+
+        /* Font Weights */
+        --fw-regular: 400;
+        --fw-medium: 500;
+        --fw-semibold: 600;
+        --fw-bold: 700;
+
+        /* Line Heights */
+        --lh-tight: 1.2;
+        --lh-normal: 1.5;
+        --lh-relaxed: 1.7;
+
+        /* Letter Spacing */
+        --ls-tight: -0.02em;
+        --ls-normal: 0;
+        --ls-wide: 0.05em;
+        --ls-caps: 0.12em;
+
+        /* ==========================================================================
+     3. SPACING & LAYOUT
+     ========================================================================== */
+
+        --space-1: 0.25rem; /* 4px */
+        --space-2: 0.5rem; /* 8px */
+        --space-3: 0.75rem; /* 12px */
+        --space-4: 1rem; /* 16px */
+        --space-5: 1.25rem; /* 20px */
+        --space-6: 1.5rem; /* 24px */
+        --space-8: 2rem; /* 32px */
+        --space-10: 2.5rem; /* 40px */
+        --space-12: 3rem; /* 48px */
+        --space-16: 4rem; /* 64px */
+
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-pill: 999px;
+
+        --slide-padding: clamp(2rem, 4vw, 4rem);
+        --slide-max-width: 1200px;
+
+        /* Transitions */
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --dur-fast: 150ms;
+        --dur-normal: 300ms;
+        --dur-slow: 500ms;
+      }
+
+      /* ==========================================================================
+   BASE RESET & GLOBAL STYLES
+   ========================================================================== */
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: var(--font-primary);
+        background: var(--bg);
+        color: var(--text);
+        line-height: var(--lh-normal);
+        overflow-x: hidden;
+      }
+
+      /* ==========================================================================
+   SLIDE CONTAINER — Full viewport presentation
+   ========================================================================== */
+
+      .slide {
+        position: relative;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: var(--slide-padding);
+        padding-bottom: calc(
+          var(--slide-padding) + 60px
+        ); /* Room for takeaway bar */
+        background: var(--bg-slide);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .slide__header {
+        margin-bottom: var(--space-8);
+      }
+
+      .slide__body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        max-width: var(--slide-max-width);
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      /* Slide number badge */
+      .slide__number {
+        position: absolute;
+        top: var(--space-6);
+        right: var(--space-6);
+        font-size: var(--fs-footnote);
+        font-weight: var(--fw-semibold);
+        color: var(--text-secondary);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+      }
+
+      /* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+      .slide-title {
+        font-family: var(--font-heading);
+        font-size: var(--fs-slide-title);
+        font-weight: var(--fw-bold);
+        color: var(--text);
+        line-height: var(--lh-tight);
+        letter-spacing: var(--ls-tight);
+        margin-bottom: var(--space-2);
+      }
+
+      .slide-title--accent {
+        color: var(--accent);
+      }
+
+      .slide-subtitle {
+        font-size: var(--fs-subtitle);
+        font-weight: var(--fw-medium);
+        color: var(--text-secondary);
+        line-height: var(--lh-tight);
+        margin-bottom: var(--space-6);
+      }
+
+      .overline {
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        letter-spacing: var(--ls-caps);
+        text-transform: uppercase;
+        margin-bottom: var(--space-2);
+      }
+
+      .body-text {
+        font-size: var(--fs-body);
+        line-height: var(--lh-relaxed);
+        color: var(--text);
+      }
+
+      .text-muted {
+        color: var(--text-secondary);
+      }
+
+      .text-accent {
+        color: var(--accent);
+      }
+
+      .footnote {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        line-height: var(--lh-normal);
+        margin-top: auto;
+        padding-top: var(--space-6);
+        border-top: 1px solid var(--border);
+      }
+
+      /* ==========================================================================
+   4A. CONSULTING-STYLE DATA TABLE
+   ========================================================================== */
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--fs-table);
+        line-height: var(--lh-normal);
+      }
+
+      .data-table thead th {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        font-weight: var(--fw-bold);
+        text-align: left;
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--fs-badge);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--accent-secondary);
+        white-space: nowrap;
+      }
+
+      .data-table thead th:first-child {
+        border-radius: var(--radius-sm) 0 0 0;
+      }
+
+      .data-table thead th:last-child {
+        border-radius: 0 var(--radius-sm) 0 0;
+      }
+
+      .data-table tbody td {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      /* Alternating rows */
+      .data-table tbody tr:nth-child(even) {
+        background: var(--bg-secondary);
+      }
+
+      .data-table tbody tr:nth-child(odd) {
+        background: transparent;
+      }
+
+      .data-table tbody tr:hover {
+        background: var(--bg-tertiary);
+      }
+
+      /* Right-align numeric columns */
+      .data-table td.num,
+      .data-table th.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-family: var(--font-mono);
+      }
+
+      /* Bold row category label */
+      .data-table td.row-label {
+        font-weight: var(--fw-semibold);
+        color: var(--text);
+      }
+
+      /* Highlighted cell */
+      .data-table td.highlight {
+        color: var(--accent);
+        font-weight: var(--fw-bold);
+      }
+
+      /* ==========================================================================
+   4B. TRAFFIC LIGHT INDICATORS (pill badges)
+   ========================================================================== */
+
+      .indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-pill);
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-semibold);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .indicator--low,
+      .indicator--green {
+        background: var(--positive-bg);
+        color: var(--positive);
+        border: 1px solid rgba(62, 201, 122, 0.25);
+      }
+
+      .indicator--medium,
+      .indicator--yellow {
+        background: var(--neutral-bg);
+        color: var(--neutral);
+        border: 1px solid rgba(232, 168, 56, 0.25);
+      }
+
+      .indicator--high,
+      .indicator--red {
+        background: var(--negative-bg);
+        color: var(--negative);
+        border: 1px solid rgba(232, 84, 84, 0.25);
+      }
+
+      /* Dot variant (smaller, inline) */
+      .indicator__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .indicator--green .indicator__dot {
+        background: var(--positive);
+      }
+      .indicator--yellow .indicator__dot {
+        background: var(--neutral);
+      }
+      .indicator--red .indicator__dot {
+        background: var(--negative);
+      }
+
+      /* ==========================================================================
+   4C. STAT HIGHLIGHT BOXES (big number + label)
+   ========================================================================== */
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      .stat-box {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-6) var(--space-5);
+        text-align: center;
+        transition: all var(--dur-normal) var(--ease-out);
+      }
+
+      .stat-box:hover {
+        border-color: var(--accent-border);
+        box-shadow: var(--shadow-gold);
+        transform: translateY(-2px);
+      }
+
+      .stat-box__value {
+        font-size: var(--fs-data-hero);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        margin-bottom: var(--space-2);
+      }
+
+      .stat-box__label {
+        font-size: var(--fs-data-label);
+        color: var(--text-secondary);
+        font-weight: var(--fw-medium);
+        text-transform: uppercase;
+        letter-spacing: var(--ls-caps);
+      }
+
+      .stat-box__delta {
+        font-size: var(--fs-footnote);
+        margin-top: var(--space-2);
+        font-weight: var(--fw-semibold);
+      }
+
+      .stat-box__delta--up {
+        color: var(--positive);
+      }
+
+      .stat-box__delta--down {
+        color: var(--negative);
+      }
+
+      /* Accent-bordered variant */
+      .stat-box--accent {
+        border-left: 3px solid var(--accent);
+        text-align: left;
+      }
+
+      /* ==========================================================================
+   4D. COMPARISON CARDS (Korea vs US side-by-side)
+   ========================================================================== */
+
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      @media (max-width: 768px) {
+        .comparison {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .comparison__card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-6);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .comparison__card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+      }
+
+      .comparison__card--korea::before {
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--accent-secondary)
+        );
+      }
+
+      .comparison__card--usa::before {
+        background: linear-gradient(90deg, #4a7cde, #6b9bf7);
+      }
+
+      .comparison__card-title {
+        font-size: var(--fs-subtitle);
+        font-weight: var(--fw-bold);
+        margin-bottom: var(--space-4);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .comparison__card--korea .comparison__card-title {
+        color: var(--accent);
+      }
+
+      .comparison__card--usa .comparison__card-title {
+        color: #6b9bf7;
+      }
+
+      .comparison__list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+
+      .comparison__list li {
+        font-size: var(--fs-body);
+        line-height: var(--lh-normal);
+        padding-left: var(--space-5);
+        position: relative;
+      }
+
+      .comparison__list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.5em;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .comparison__card--korea .comparison__list li::before {
+        background: var(--accent);
+      }
+
+      .comparison__card--usa .comparison__list li::before {
+        background: #6b9bf7;
+      }
+
+      /* ==========================================================================
+   4E. CSS-ONLY BAR CHARTS (horizontal percentage bars)
+   ========================================================================== */
+
+      .bar-chart {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      .bar-chart__item {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+
+      .bar-chart__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+
+      .bar-chart__label {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-medium);
+        color: var(--text);
+      }
+
+      .bar-chart__value {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .bar-chart__track {
+        width: 100%;
+        height: 28px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        position: relative;
+        border: 1px solid var(--border);
+      }
+
+      .bar-chart__fill {
+        height: 100%;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--accent-secondary)
+        );
+        transition: width 1s var(--ease-out);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: var(--space-2);
+        min-width: fit-content;
+      }
+
+      .bar-chart__fill--blue {
+        background: linear-gradient(90deg, #3b6ecf, #6b9bf7);
+      }
+
+      .bar-chart__fill--positive {
+        background: linear-gradient(90deg, #2d9e63, #3ec97a);
+      }
+
+      .bar-chart__fill--negative {
+        background: linear-gradient(90deg, #c43a3a, #e85454);
+      }
+
+      /* Stacked bar variant */
+      .bar-chart__track--stacked {
+        display: flex;
+      }
+
+      .bar-chart__track--stacked .bar-chart__fill {
+        border-radius: 0;
+      }
+
+      .bar-chart__track--stacked .bar-chart__fill:first-child {
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      }
+
+      .bar-chart__track--stacked .bar-chart__fill:last-child {
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+
+      /* Inline percentage text inside bar */
+      .bar-chart__fill-text {
+        font-size: var(--fs-footnote);
+        font-weight: var(--fw-bold);
+        color: var(--text-inverse);
+        white-space: nowrap;
+      }
+
+      /* ==========================================================================
+   4F. STAR RATING DISPLAY
+   ========================================================================== */
+
+      .star-rating {
+        display: inline-flex;
+        gap: 2px;
+        align-items: center;
+      }
+
+      .star-rating__star {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        display: inline-block;
+      }
+
+      /* CSS-only star shape using clip-path */
+      .star-rating__star::before {
+        content: "\2605"; /* Unicode filled star */
+        font-size: 18px;
+        line-height: 1;
+        color: var(--border-strong);
+      }
+
+      .star-rating__star--filled::before {
+        color: var(--accent);
+      }
+
+      .star-rating__star--half::before {
+        background: linear-gradient(
+          90deg,
+          var(--accent) 50%,
+          var(--border-strong) 50%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Matrix table with star ratings */
+      .rating-matrix {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .rating-matrix th {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-bold);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+        text-align: left;
+      }
+
+      .rating-matrix td {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--border);
+        font-size: var(--fs-table);
+      }
+
+      .rating-matrix tbody tr:nth-child(even) {
+        background: var(--bg-secondary);
+      }
+
+      /* ==========================================================================
+   4G. ROADMAP / TIMELINE VISUALIZATION
+   ========================================================================== */
+
+      .timeline {
+        position: relative;
+        padding-left: var(--space-10);
+        margin: var(--space-6) 0;
+      }
+
+      /* Vertical line */
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--divider);
+      }
+
+      .timeline__item {
+        position: relative;
+        padding-bottom: var(--space-8);
+      }
+
+      .timeline__item:last-child {
+        padding-bottom: 0;
+      }
+
+      /* Node dot */
+      .timeline__item::before {
+        content: "";
+        position: absolute;
+        left: calc(-1 * var(--space-10) + 9px);
+        top: 4px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 3px solid var(--bg);
+        box-shadow: 0 0 0 2px var(--accent);
+        z-index: 1;
+      }
+
+      .timeline__item--future::before {
+        background: var(--bg);
+        border-color: var(--accent-border);
+        box-shadow: 0 0 0 2px var(--accent-border);
+      }
+
+      .timeline__date {
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+        margin-bottom: var(--space-1);
+      }
+
+      .timeline__title {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-semibold);
+        color: var(--text);
+        margin-bottom: var(--space-1);
+      }
+
+      .timeline__desc {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        line-height: var(--lh-relaxed);
+      }
+
+      /* Horizontal roadmap variant (3-phase) */
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+        position: relative;
+      }
+
+      @media (max-width: 768px) {
+        .roadmap {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Connecting line */
+      .roadmap::before {
+        content: "";
+        position: absolute;
+        top: 24px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: var(--divider);
+        z-index: 0;
+      }
+
+      @media (max-width: 768px) {
+        .roadmap::before {
+          display: none;
+        }
+      }
+
+      .roadmap__phase {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-6) var(--space-5);
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        transition: all var(--dur-normal) var(--ease-out);
+      }
+
+      .roadmap__phase:hover {
+        border-color: var(--accent-border);
+        box-shadow: var(--shadow-gold);
+        transform: translateY(-3px);
+      }
+
+      .roadmap__phase-number {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--text-on-accent);
+        font-size: var(--fs-subtitle);
+        font-weight: var(--fw-bold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--space-4);
+      }
+
+      .roadmap__phase-title {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-bold);
+        color: var(--text);
+        margin-bottom: var(--space-1);
+      }
+
+      .roadmap__phase-period {
+        font-size: var(--fs-footnote);
+        color: var(--accent-secondary);
+        font-weight: var(--fw-semibold);
+        margin-bottom: var(--space-3);
+      }
+
+      .roadmap__phase-desc {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        line-height: var(--lh-relaxed);
+        text-align: left;
+      }
+
+      .roadmap__phase-list {
+        list-style: none;
+        text-align: left;
+        margin-top: var(--space-3);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+      }
+
+      .roadmap__phase-list li {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        padding-left: var(--space-4);
+        position: relative;
+      }
+
+      .roadmap__phase-list li::before {
+        content: "\2192"; /* arrow */
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+      }
+
+      /* ==========================================================================
+   5. SLIDE TAKEAWAY BAR (bottom-aligned key message)
+   ========================================================================== */
+
+      .takeaway {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(
+          90deg,
+          var(--bg-secondary),
+          var(--bg-tertiary)
+        );
+        border-top: 1px solid var(--accent-border);
+        padding: var(--space-4) var(--slide-padding);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .takeaway__icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        background: var(--accent);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--text-on-accent);
+        font-weight: var(--fw-bold);
+      }
+
+      .takeaway__text {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-semibold);
+        color: var(--accent);
+        line-height: var(--lh-tight);
+      }
+
+      /* ==========================================================================
+   ADDITIONAL COMPONENT PATTERNS
+   ========================================================================== */
+
+      /* --- Key Findings / Executive Summary Bullets --- */
+      .key-findings {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+        counter-reset: finding;
+      }
+
+      .key-findings li {
+        counter-increment: finding;
+        display: flex;
+        gap: var(--space-4);
+        align-items: flex-start;
+        padding: var(--space-4) var(--space-5);
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        border-left: 3px solid var(--accent);
+      }
+
+      .key-findings li::before {
+        content: counter(finding);
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--text-on-accent);
+        font-weight: var(--fw-bold);
+        font-size: var(--fs-body);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* --- Icon Card Grid (Technology Trends) --- */
+      .icon-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      .icon-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-6);
+        text-align: center;
+        transition: all var(--dur-normal) var(--ease-out);
+      }
+
+      .icon-card:hover {
+        border-color: var(--accent-border);
+        box-shadow: var(--shadow-gold);
+        transform: translateY(-2px);
+      }
+
+      .icon-card__icon {
+        font-size: 2rem;
+        margin-bottom: var(--space-3);
+        display: block;
+      }
+
+      .icon-card__title {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-bold);
+        color: var(--text);
+        margin-bottom: var(--space-2);
+      }
+
+      .icon-card__desc {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        line-height: var(--lh-relaxed);
+      }
+
+      /* --- Brand Cards (Competition) --- */
+      .brand-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      .brand-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        transition: all var(--dur-normal) var(--ease-out);
+      }
+
+      .brand-card:hover {
+        border-color: var(--accent-border);
+      }
+
+      .brand-card__rank {
+        font-size: var(--fs-footnote);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        letter-spacing: var(--ls-caps);
+        text-transform: uppercase;
+        margin-bottom: var(--space-2);
+      }
+
+      .brand-card__name {
+        font-size: var(--fs-subtitle);
+        font-weight: var(--fw-bold);
+        color: var(--text);
+        margin-bottom: var(--space-1);
+      }
+
+      .brand-card__parent {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-3);
+      }
+
+      .brand-card__meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+      }
+
+      /* --- Risk Matrix (2x2 or list) --- */
+      .risk-matrix {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      @media (max-width: 768px) {
+        .risk-matrix {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .risk-item {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        border-left: 4px solid var(--border);
+      }
+
+      .risk-item--high {
+        border-left-color: var(--negative);
+      }
+      .risk-item--medium {
+        border-left-color: var(--neutral);
+      }
+      .risk-item--low {
+        border-left-color: var(--positive);
+      }
+
+      .risk-item__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-2);
+      }
+
+      .risk-item__title {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-bold);
+        color: var(--text);
+      }
+
+      .risk-item__mitigation {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        line-height: var(--lh-relaxed);
+      }
+
+      /* --- Title Slide Specific --- */
+      .slide--title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          var(--bg) 0%,
+          var(--bg-secondary) 50%,
+          var(--bg) 100%
+        );
+      }
+
+      .slide--title .slide-title {
+        font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+        margin-bottom: var(--space-4);
+      }
+
+      .slide--title .slide-subtitle {
+        max-width: 700px;
+        font-size: var(--fs-subtitle);
+      }
+
+      .title-divider {
+        width: 80px;
+        height: 3px;
+        background: var(--accent);
+        margin: var(--space-6) auto;
+        border-radius: var(--radius-pill);
+      }
+
+      .title-meta {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        display: flex;
+        gap: var(--space-6);
+        margin-top: var(--space-4);
+      }
+
+      /* --- Scenario Cards (Strategy Recommendation) --- */
+      .scenarios {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-4);
+        margin: var(--space-6) 0;
+      }
+
+      @media (max-width: 768px) {
+        .scenarios {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .scenario-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-6);
+        position: relative;
+        transition: all var(--dur-normal) var(--ease-out);
+      }
+
+      .scenario-card--recommended {
+        border-color: var(--accent);
+        box-shadow: var(--shadow-gold);
+      }
+
+      .scenario-card--recommended::after {
+        content: "RECOMMENDED";
+        position: absolute;
+        top: calc(-1 * var(--space-3));
+        right: var(--space-4);
+        background: var(--accent);
+        color: var(--text-on-accent);
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-bold);
+        letter-spacing: var(--ls-caps);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-sm);
+      }
+
+      .scenario-card__title {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        margin-bottom: var(--space-3);
+      }
+
+      /* --- M&A Deal Card --- */
+      .deal-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-4) var(--space-5);
+        margin-bottom: var(--space-3);
+      }
+
+      .deal-card__amount {
+        font-size: var(--fs-subtitle);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+      }
+
+      .deal-card__parties {
+        font-size: var(--fs-body);
+        font-weight: var(--fw-semibold);
+        color: var(--text);
+      }
+
+      .deal-card__detail {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+      }
+
+      /* --- Source/Appendix List --- */
+      .source-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        margin: var(--space-4) 0;
+      }
+
+      .source-list li {
+        font-size: var(--fs-footnote);
+        color: var(--text-secondary);
+        padding-left: var(--space-5);
+        position: relative;
+        line-height: var(--lh-relaxed);
+      }
+
+      .source-list li::before {
+        content: attr(data-num);
+        position: absolute;
+        left: 0;
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        font-size: var(--fs-badge);
+      }
+
+      /* ==========================================================================
+   ENTRY BARRIERS MATRIX (full traffic-light table)
+   ========================================================================== */
+
+      .barrier-matrix {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .barrier-matrix thead th {
+        background: var(--accent);
+        color: var(--text-on-accent);
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--fs-badge);
+        font-weight: var(--fw-bold);
+        letter-spacing: var(--ls-wide);
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      .barrier-matrix thead th:first-child {
+        text-align: left;
+      }
+
+      .barrier-matrix tbody td {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+        font-size: var(--fs-table);
+      }
+
+      .barrier-matrix tbody td:first-child {
+        text-align: left;
+        font-weight: var(--fw-semibold);
+      }
+
+      .barrier-matrix tbody tr:nth-child(even) {
+        background: var(--bg-secondary);
+      }
+
+      /* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-4);
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-4);
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-4);
+      }
+
+      @media (max-width: 768px) {
+        .grid-2,
+        .grid-3,
+        .grid-4 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .mt-4 {
+        margin-top: var(--space-4);
+      }
+      .mt-6 {
+        margin-top: var(--space-6);
+      }
+      .mt-8 {
+        margin-top: var(--space-8);
+      }
+      .mb-4 {
+        margin-bottom: var(--space-4);
+      }
+      .mb-6 {
+        margin-bottom: var(--space-6);
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+
+      .gold-divider {
+        border: none;
+        height: 1px;
+        background: var(--divider);
+        margin: var(--space-6) 0;
+      }
+
+      /* ==========================================================================
+   PRINT STYLES (for PDF export)
+   ========================================================================== */
+
+      @media print {
+        .slide {
+          page-break-after: always;
+          min-height: 100vh;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        .slide:last-child {
+          page-break-after: auto;
+        }
+
+        body {
+          background: white;
+          color: #1a1a1a;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================================================================
+     SLIDE 1 — TITLE SLIDE
+     Layout: Centered hero, dark gradient background
+     ================================================================ -->
+    <section class="slide slide--title" id="slide-1">
+      <span class="slide__number">Confidential</span>
+      <p class="overline">Market Intelligence Report</p>
+      <h1 class="slide-title slide-title--accent">Sunscreen Market Analysis</h1>
+      <h2 class="slide-subtitle">
+        Korea vs USA 2025 &mdash; Strategic Assessment for Market Entry
+      </h2>
+      <div class="title-divider"></div>
+      <div class="title-meta">
+        <span>March 2025</span>
+        <span>Prepared for C-Level Review</span>
+        <span>Classification: Confidential</span>
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 2 — EXECUTIVE SUMMARY
+     Layout: Numbered key findings with accent left-border cards
+     ================================================================ -->
+    <section class="slide" id="slide-2">
+      <span class="slide__number">02 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Executive Summary</p>
+        <h1 class="slide-title">5 Key Findings</h1>
+        <h2 class="slide-subtitle">
+          Critical insights for strategic decision-making
+        </h2>
+      </div>
+      <div class="slide__body">
+        <ol class="key-findings">
+          <li>
+            <div>
+              <strong style="color: var(--text)"
+                >US market is ~77x larger than Korea</strong
+              >
+              <p
+                class="text-muted"
+                style="
+                  margin-top: var(--space-1);
+                  font-size: var(--fs-footnote);
+                "
+              >
+                Korea ~$150M vs US ~$11.5B in sunscreen-only segment (2024),
+                presenting massive TAM opportunity
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong style="color: var(--text)"
+                >Regulatory divergence creates structural barrier</strong
+              >
+              <p
+                class="text-muted"
+                style="
+                  margin-top: var(--space-1);
+                  font-size: var(--fs-footnote);
+                "
+              >
+                Korea classifies sunscreen as cosmetics; US requires OTC drug
+                approval via FDA monograph
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong style="color: var(--text)"
+                >Korea became #1 sunscreen exporter to US in 2024</strong
+              >
+              <p
+                class="text-muted"
+                style="
+                  margin-top: var(--space-1);
+                  font-size: var(--fs-footnote);
+                "
+              >
+                Surpassing France, driven by K-beauty demand and superior
+                formulation technology
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong style="color: var(--text)"
+                >Ingredient innovation gap favors Korea</strong
+              >
+              <p
+                class="text-muted"
+                style="
+                  margin-top: var(--space-1);
+                  font-size: var(--fs-footnote);
+                "
+              >
+                16+ modern UV filters approved in Korea vs only 17 (many
+                outdated) in the US
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong style="color: var(--text)"
+                >Distribution channel strategy differs fundamentally</strong
+              >
+              <p
+                class="text-muted"
+                style="
+                  margin-top: var(--space-1);
+                  font-size: var(--fs-footnote);
+                "
+              >
+                Korea: Olive Young (H&B) dominance; US: Walmart/Target mass +
+                Amazon DTC growing rapidly
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >K-beauty sunscreen has a structural edge in formulation but faces
+          high regulatory and distribution barriers in the US market.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 3 — GLOBAL MARKET OVERVIEW
+     Layout: Stat boxes (top) + comparison bar chart (bottom)
+     ================================================================ -->
+    <section class="slide" id="slide-3">
+      <span class="slide__number">03 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Market Context</p>
+        <h1 class="slide-title">Global Sunscreen Market Overview</h1>
+      </div>
+      <div class="slide__body">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-box__value">$14.4B</div>
+            <div class="stat-box__label">Global Market 2024</div>
+            <div class="stat-box__delta stat-box__delta--up">+6.1% CAGR</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">$21.4B</div>
+            <div class="stat-box__label">Projected 2030</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">30-35%</div>
+            <div class="stat-box__label">US Global Share</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">~2.2%</div>
+            <div class="stat-box__label">Korea Global Share</div>
+          </div>
+        </div>
+
+        <h2 class="slide-subtitle mt-6">Market Size Comparison (2024)</h2>
+        <div class="bar-chart">
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">United States</span>
+              <span class="bar-chart__value">$11.5B</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 100%"
+              >
+                <span class="bar-chart__fill-text">100%</span>
+              </div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">South Korea</span>
+              <span class="bar-chart__value">$0.15B</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 3%"></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="footnote">
+          Source: Euromonitor, Grand View Research, Mordor Intelligence
+          (2024-2025 estimates)
+        </p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >The US sunscreen market is ~77x larger than Korea, representing the
+          single largest national market globally.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 4 — KOREA MARKET SIZE
+     Layout: Hero stat boxes + growth bar chart
+     ================================================================ -->
+    <section class="slide" id="slide-4">
+      <span class="slide__number">04 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Korea Deep Dive</p>
+        <h1 class="slide-title">Korea Sunscreen Market</h1>
+        <h2 class="slide-subtitle">Compact but innovation-driven</h2>
+      </div>
+      <div class="slide__body">
+        <div class="stats-row">
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$150M</div>
+            <div class="stat-box__label">Sunscreen Only (2024)</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$320M</div>
+            <div class="stat-box__label">Total Suncare (2024)</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">4-8%</div>
+            <div class="stat-box__label">CAGR Range</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$410M+</div>
+            <div class="stat-box__label">2030 Forecast</div>
+            <div class="stat-box__delta stat-box__delta--up">
+              Optimistic scenario
+            </div>
+          </div>
+        </div>
+
+        <h2 class="slide-subtitle mt-6">Growth Drivers</h2>
+        <div class="bar-chart">
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">K-beauty Export Demand</span>
+              <span class="bar-chart__value">Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 90%"></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Year-round SPF Adoption</span>
+              <span class="bar-chart__value">Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 85%"></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Skincare-SPF Convergence</span>
+              <span class="bar-chart__value">Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 85%"></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Skin Cancer Awareness</span>
+              <span class="bar-chart__value">Medium</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 50%"></div>
+            </div>
+          </div>
+        </div>
+        <p class="footnote">
+          Source: KHISS, Mordor Intelligence, industry estimates
+        </p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korea's sunscreen market growth is primarily export-driven, with
+          K-beauty acting as the key demand multiplier.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 5 — US MARKET SIZE
+     Layout: Same structure as Korea for visual consistency
+     ================================================================ -->
+    <section class="slide" id="slide-5">
+      <span class="slide__number">05 / 19</span>
+      <div class="slide__header">
+        <p class="overline">US Deep Dive</p>
+        <h1 class="slide-title">US Sunscreen Market</h1>
+        <h2 class="slide-subtitle">Scale leader with regulatory complexity</h2>
+      </div>
+      <div class="slide__body">
+        <div class="stats-row">
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$11.5B</div>
+            <div class="stat-box__label">Sunscreen Only (2024)</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$14.4B</div>
+            <div class="stat-box__label">Total Suncare (2024)</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">6.1%</div>
+            <div class="stat-box__label">CAGR</div>
+          </div>
+          <div class="stat-box stat-box--accent">
+            <div class="stat-box__value">$21.4B</div>
+            <div class="stat-box__label">2030 Forecast</div>
+            <div class="stat-box__delta stat-box__delta--up">+$7B growth</div>
+          </div>
+        </div>
+
+        <h2 class="slide-subtitle mt-6">Growth Drivers</h2>
+        <div class="bar-chart">
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Skin Cancer Awareness Campaigns</span
+              >
+              <span class="bar-chart__value">Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 90%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Clean / Mineral / Reef-Safe Trend</span
+              >
+              <span class="bar-chart__value">Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 85%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Daily-wear SPF Adoption (Growing)</span
+              >
+              <span class="bar-chart__value">Medium-Strong</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 65%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Skincare Routine Integration</span>
+              <span class="bar-chart__value">Medium</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 55%"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <p class="footnote">
+          Source: Grand View Research, Statista, Euromonitor 2024
+        </p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >US market adds ~$7B by 2030, driven by health awareness and
+          "skinification" of sun protection.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 6 — REGULATION COMPARISON
+     Layout: Side-by-side comparison cards
+     ================================================================ -->
+    <section class="slide" id="slide-6">
+      <span class="slide__number">06 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Regulatory Landscape</p>
+        <h1 class="slide-title">Regulation Comparison</h1>
+        <h2 class="slide-subtitle">
+          Fundamental structural difference in product classification
+        </h2>
+      </div>
+      <div class="slide__body">
+        <div class="comparison">
+          <div class="comparison__card comparison__card--korea">
+            <div class="comparison__card-title">Korea</div>
+            <table class="data-table" style="font-size: var(--fs-footnote)">
+              <tbody>
+                <tr>
+                  <td class="row-label">Classification</td>
+                  <td>Functional <strong>Cosmetic</strong></td>
+                </tr>
+                <tr>
+                  <td class="row-label">Regulator</td>
+                  <td>MFDS (Ministry of Food & Drug Safety)</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Approval Process</td>
+                  <td>Notification system (faster)</td>
+                </tr>
+                <tr>
+                  <td class="row-label">UV Filters Allowed</td>
+                  <td>16+ modern filters</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Labeling</td>
+                  <td>SPF + PA++++ system</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Time to Market</td>
+                  <td>Weeks to months</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="comparison__card comparison__card--usa">
+            <div class="comparison__card-title">United States</div>
+            <table class="data-table" style="font-size: var(--fs-footnote)">
+              <tbody>
+                <tr>
+                  <td class="row-label">Classification</td>
+                  <td>OTC <strong>Drug</strong></td>
+                </tr>
+                <tr>
+                  <td class="row-label">Regulator</td>
+                  <td>FDA (Food & Drug Administration)</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Approval Process</td>
+                  <td>OTC Monograph (lengthy)</td>
+                </tr>
+                <tr>
+                  <td class="row-label">UV Filters Allowed</td>
+                  <td>17 (many outdated since 1999)</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Labeling</td>
+                  <td>SPF + Broad Spectrum</td>
+                </tr>
+                <tr>
+                  <td class="row-label">Time to Market</td>
+                  <td>Years (GRASE determination)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >FDA's drug classification creates a 2-3 year time-to-market
+          disadvantage for new UV filter ingredients in the US.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 7 — CONSUMER TRENDS COMPARISON
+     Layout: Full-width consulting data table
+     ================================================================ -->
+    <section class="slide" id="slide-7">
+      <span class="slide__number">07 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Consumer Insights</p>
+        <h1 class="slide-title">Consumer Trends Comparison</h1>
+      </div>
+      <div class="slide__body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Trend</th>
+              <th>Korea</th>
+              <th>United States</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Daily SPF Usage</td>
+              <td>Normalized (4-season routine)</td>
+              <td>Only ~12% use daily</td>
+            </tr>
+            <tr>
+              <td class="row-label">Purchase Driver</td>
+              <td>Texture, tone-up, multi-function</td>
+              <td>SPF level, dermatologist-recommended</td>
+            </tr>
+            <tr>
+              <td class="row-label">Price Sensitivity</td>
+              <td>Mid-range ($10-25)</td>
+              <td>Bifurcated (mass $8-15 / prestige $30+)</td>
+            </tr>
+            <tr>
+              <td class="row-label">Key Trend</td>
+              <td>Tone-up / Multitasking</td>
+              <td>Mineral / Clean / Reef-Safe</td>
+            </tr>
+            <tr>
+              <td class="row-label">Discovery Channel</td>
+              <td>Olive Young, social media</td>
+              <td>TikTok, dermatologists, Amazon reviews</td>
+            </tr>
+            <tr>
+              <td class="row-label">Form Factor Pref.</td>
+              <td>Lightweight essence, gel, milk</td>
+              <td>Lotion, stick, spray</td>
+            </tr>
+            <tr>
+              <td class="row-label">Reapplication</td>
+              <td>Cushion refills, spray (convenient)</td>
+              <td>Low compliance (education gap)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korean consumers optimize for cosmetic elegance; US consumers
+          optimize for clinical efficacy and safety claims.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 8 — TECHNOLOGY TRENDS
+     Layout: Icon card grid (2x3 or 3x2)
+     ================================================================ -->
+    <section class="slide" id="slide-8">
+      <span class="slide__number">08 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Innovation Landscape</p>
+        <h1 class="slide-title">Technology Trends</h1>
+      </div>
+      <div class="slide__body">
+        <div class="icon-cards">
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x1F9EA;</span>
+            <div class="icon-card__title">Next-Gen UV Filters</div>
+            <div class="icon-card__desc">
+              Tinosorb, Mexoryl, encapsulated filters offering broader
+              protection with lighter textures
+            </div>
+          </div>
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x1F48E;</span>
+            <div class="icon-card__title">Hybrid Formulations</div>
+            <div class="icon-card__desc">
+              Skincare + SPF convergence: anti-aging serums, tone-up primers
+              with built-in protection
+            </div>
+          </div>
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x1F30A;</span>
+            <div class="icon-card__title">Reef-Safe Chemistry</div>
+            <div class="icon-card__desc">
+              Non-nano zinc oxide, bio-compatible filters addressing Hawaii/Key
+              West regulations
+            </div>
+          </div>
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x1F4F1;</span>
+            <div class="icon-card__title">Smart Application</div>
+            <div class="icon-card__desc">
+              UV-sensor patches, app-connected devices, color-changing
+              indicators for reapplication
+            </div>
+          </div>
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x1F331;</span>
+            <div class="icon-card__title">Clean & Sustainable</div>
+            <div class="icon-card__desc">
+              Plant-derived UV boosters, biodegradable packaging, carbon-neutral
+              manufacturing
+            </div>
+          </div>
+          <div class="icon-card">
+            <span class="icon-card__icon">&#x2696;</span>
+            <div class="icon-card__title">Blue Light / IR Protection</div>
+            <div class="icon-card__desc">
+              Expanding beyond UV: protection from HEV (screen) light and
+              infrared radiation
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korea leads in formulation elegance and hybrid products; US leads in
+          clinical testing and reef-safe innovation.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 9 — COMPETITION KOREA
+     Layout: Brand cards in a grid
+     ================================================================ -->
+    <section class="slide" id="slide-9">
+      <span class="slide__number">09 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Competitive Landscape</p>
+        <h1 class="slide-title">Korea: Key Players</h1>
+      </div>
+      <div class="slide__body">
+        <div class="brand-cards">
+          <div class="brand-card">
+            <div class="brand-card__rank">#1 Market Leader</div>
+            <div class="brand-card__name">AmorePacific</div>
+            <div class="brand-card__parent">Sulwhasoo, Laneige, Innisfree</div>
+            <div class="brand-card__meta">
+              <span>Premium + Mass portfolio</span>
+              <span>Strong export infrastructure</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-card__rank">#2 Challenger</div>
+            <div class="brand-card__name">LG H&H</div>
+            <div class="brand-card__parent">The Face Shop, O HUI, Su:m37</div>
+            <div class="brand-card__meta">
+              <span>Growing sun care focus</span>
+              <span>Retail distribution strength</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-card__rank">Indie Disruptor</div>
+            <div class="brand-card__name">Beauty of Joseon</div>
+            <div class="brand-card__parent">Independent</div>
+            <div class="brand-card__meta">
+              <span>Relief Sun viral on TikTok</span>
+              <span>#1 on Amazon US sunscreen</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-card__rank">Rising Star</div>
+            <div class="brand-card__name">SKIN1004</div>
+            <div class="brand-card__parent">Independent</div>
+            <div class="brand-card__meta">
+              <span>Madagascar Centella line</span>
+              <span>Strong DTC presence</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-card__rank">Established</div>
+            <div class="brand-card__name">MISSHA</div>
+            <div class="brand-card__parent">Able C&C</div>
+            <div class="brand-card__meta">
+              <span>All Around Safe Block</span>
+              <span>Value positioning</span>
+            </div>
+          </div>
+          <div class="brand-card">
+            <div class="brand-card__rank">Heritage</div>
+            <div class="brand-card__name">Biore UV (JP)</div>
+            <div class="brand-card__parent">Kao Corporation</div>
+            <div class="brand-card__meta">
+              <span>Key import competitor</span>
+              <span>Watery Essence benchmark</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korean market is fragmenting: indie brands are capturing
+          disproportionate export share via social media virality.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 10 — COMPETITION US (market share bars)
+     Layout: Horizontal bar chart ranking
+     ================================================================ -->
+    <section class="slide" id="slide-10">
+      <span class="slide__number">10 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Competitive Landscape</p>
+        <h1 class="slide-title">US: Market Share Leaders</h1>
+      </div>
+      <div class="slide__body">
+        <div class="bar-chart">
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Johnson & Johnson (Neutrogena, Aveeno)</span
+              >
+              <span class="bar-chart__value">~20%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 80%"
+              >
+                <span class="bar-chart__fill-text">20%</span>
+              </div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Beiersdorf (Coppertone, NIVEA Sun)</span
+              >
+              <span class="bar-chart__value">~15%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 60%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >L'Oreal (La Roche-Posay, CeraVe)</span
+              >
+              <span class="bar-chart__value">~12%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 48%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label"
+                >Edgewell (Banana Boat, Hawaiian Tropic)</span
+              >
+              <span class="bar-chart__value">~10%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--blue"
+                style="width: 40%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Shiseido / K-beauty imports</span>
+              <span class="bar-chart__value">~5%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div class="bar-chart__fill" style="width: 20%"></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Supergoop / Indie Brands</span>
+              <span class="bar-chart__value">~8%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill bar-chart__fill--positive"
+                style="width: 32%"
+              ></div>
+            </div>
+          </div>
+          <div class="bar-chart__item">
+            <div class="bar-chart__header">
+              <span class="bar-chart__label">Others / Private Label</span>
+              <span class="bar-chart__value">~30%</span>
+            </div>
+            <div class="bar-chart__track">
+              <div
+                class="bar-chart__fill"
+                style="width: 100%; background: var(--bg-tertiary)"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <p class="footnote">
+          Source: Euromonitor, Statista, industry estimates (2024). Shares are
+          approximate.
+        </p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >US market is consolidating around dermatologist-backed brands;
+          K-beauty imports are the fastest-growing segment.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 11 — K-BEAUTY US PENETRATION
+     Layout: Hero metrics + supporting details
+     ================================================================ -->
+    <section class="slide" id="slide-11">
+      <span class="slide__number">11 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Strategic Opportunity</p>
+        <h1 class="slide-title">K-Beauty US Penetration</h1>
+        <h2 class="slide-subtitle">
+          Korea surpassed France as #1 sunscreen exporter to US in 2024
+        </h2>
+      </div>
+      <div class="slide__body">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-box__value">#1</div>
+            <div class="stat-box__label">US Import Rank</div>
+            <div class="stat-box__delta stat-box__delta--up">
+              Surpassed France in 2024
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">300%+</div>
+            <div class="stat-box__label">Export Growth (3yr)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">Top 5</div>
+            <div class="stat-box__label">Amazon Sunscreen Rank</div>
+            <div class="stat-box__delta">Beauty of Joseon Relief Sun</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box__value">2B+</div>
+            <div class="stat-box__label">TikTok #KBeautySunscreen Views</div>
+          </div>
+        </div>
+
+        <div class="comparison mt-6">
+          <div class="comparison__card comparison__card--korea">
+            <div class="comparison__card-title">Winning Factors</div>
+            <ul class="comparison__list">
+              <li>Superior texture and cosmetic elegance</li>
+              <li>Affordable price point ($12-22 vs $30+ US premium)</li>
+              <li>
+                Social media virality (TikTok, Reddit r/SkincareAddiction)
+              </li>
+              <li>
+                Multi-functional benefits (tone-up, hydration, anti-aging)
+              </li>
+            </ul>
+          </div>
+          <div class="comparison__card comparison__card--usa">
+            <div class="comparison__card-title">Remaining Barriers</div>
+            <ul class="comparison__list">
+              <li>FDA OTC monograph compliance requirements</li>
+              <li>Limited retail shelf space (Sephora/Ulta only)</li>
+              <li>Brand awareness outside K-beauty enthusiasts</li>
+              <li>No dermatologist endorsement infrastructure</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >K-beauty sunscreen has achieved product-market fit in US DTC
+          channels; the challenge is scaling into mass retail.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 12 — DISTRIBUTION CHANNELS
+     Layout: Comparison data table
+     ================================================================ -->
+    <section class="slide" id="slide-12">
+      <span class="slide__number">12 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Go-to-Market</p>
+        <h1 class="slide-title">Distribution Channels</h1>
+      </div>
+      <div class="slide__body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Channel</th>
+              <th>Korea Share</th>
+              <th>US Share</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">H&B Stores (Olive Young)</td>
+              <td class="highlight">~40%</td>
+              <td>N/A (no equivalent)</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Growing</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Mass Retail (Walmart/Target)</td>
+              <td>~15%</td>
+              <td class="highlight">~35%</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Stable</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Online / DTC</td>
+              <td>~25%</td>
+              <td>~25%</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Fast Growth</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Pharmacy / Drug Stores</td>
+              <td>~10%</td>
+              <td>~20%</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Stable</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Specialty Beauty (Sephora/Ulta)</td>
+              <td>~5%</td>
+              <td>~12%</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Growing</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Department Stores</td>
+              <td>~5%</td>
+              <td>~8%</td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>Declining</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Olive Young dominates Korea; US has no single-channel gatekeeper,
+          requiring multi-channel strategy for scale.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 13 — PRICE COMPETITIVENESS
+     Layout: Comparison data table with price ranges
+     ================================================================ -->
+    <section class="slide" id="slide-13">
+      <span class="slide__number">13 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Pricing Strategy</p>
+        <h1 class="slide-title">Price Competitiveness</h1>
+      </div>
+      <div class="slide__body">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Segment</th>
+              <th>Korea Range</th>
+              <th>US Range</th>
+              <th>K-beauty Advantage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Budget / Mass</td>
+              <td>$5 - $12</td>
+              <td>$8 - $15</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Strong</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Mid-range</td>
+              <td>$12 - $22</td>
+              <td>$15 - $30</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Strong</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Premium</td>
+              <td>$22 - $40</td>
+              <td>$30 - $50</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Moderate</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Luxury / Derm</td>
+              <td>$40+</td>
+              <td>$50 - $80+</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Limited</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Cost per ml (avg)</td>
+              <td class="highlight">$0.20 - $0.35</td>
+              <td>$0.40 - $0.80</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>2x Value</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="footnote mt-6">
+          Note: K-beauty sunscreens typically offer 50% more product per dollar
+          compared to US equivalents at comparable quality tiers.
+        </p>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >K-beauty offers a compelling price-value proposition at 40-50% lower
+          cost/ml with equivalent or superior formulations.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 14 — ENTRY BARRIERS MATRIX
+     Layout: Traffic-light barrier table
+     ================================================================ -->
+    <section class="slide" id="slide-14">
+      <span class="slide__number">14 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Market Entry Assessment</p>
+        <h1 class="slide-title">Entry Barriers Matrix</h1>
+      </div>
+      <div class="slide__body">
+        <table class="barrier-matrix">
+          <thead>
+            <tr>
+              <th>Barrier</th>
+              <th>Korea</th>
+              <th>United States</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Regulatory Approval</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Low</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>High</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Time to Market</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Weeks</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>Years</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Capital Requirement</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Low</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Medium</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Distribution Access</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Medium</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>High</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Brand Building</td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Medium</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>High</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Manufacturing</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Low</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Medium</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">IP / Patent Risk</td>
+              <td>
+                <span class="indicator indicator--green"
+                  ><span class="indicator__dot"></span>Low</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--yellow"
+                  ><span class="indicator__dot"></span>Medium</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Competitive Intensity</td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>High</span
+                >
+              </td>
+              <td>
+                <span class="indicator indicator--red"
+                  ><span class="indicator__dot"></span>High</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korea entry is feasible for startups; US entry requires significant
+          capital, regulatory expertise, and 18-36 month runway.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 15 — M&A TRENDS
+     Layout: Timeline + deal cards
+     ================================================================ -->
+    <section class="slide" id="slide-15">
+      <span class="slide__number">15 / 19</span>
+      <div class="slide__header">
+        <p class="overline">M&A Activity</p>
+        <h1 class="slide-title">Recent M&A & Investment Trends</h1>
+      </div>
+      <div class="slide__body">
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__date">2024</div>
+            <div class="timeline__title">
+              L'Oreal acquires Aesop (Sun Care expansion)
+            </div>
+            <div class="timeline__desc">
+              $2.5B deal signals luxury conglomerate interest in premium sun
+              care adjacency
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">2024</div>
+            <div class="timeline__title">
+              K-beauty brands secure Series B+ funding
+            </div>
+            <div class="timeline__desc">
+              Beauty of Joseon, SKIN1004, and others raised capital for US
+              market expansion
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">2023</div>
+            <div class="timeline__title">Supergoop valued at $700M+</div>
+            <div class="timeline__desc">
+              Blackstone investment validates sun care as a standalone category
+              play
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__date">2023</div>
+            <div class="timeline__title">
+              AmorePacific US distribution expansion
+            </div>
+            <div class="timeline__desc">
+              Strategic push into Sephora and Amazon US for sun care portfolio
+            </div>
+          </div>
+          <div class="timeline__item timeline__item--future">
+            <div class="timeline__date">2025+</div>
+            <div class="timeline__title">
+              Expected: US conglomerate acquires K-beauty sunscreen brand
+            </div>
+            <div class="timeline__desc">
+              Market consensus: a top 5 US company will acquire a Korean
+              sunscreen brand within 24 months
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >M&A activity suggests sun care is being re-valued as a high-growth
+          standalone category, not a seasonal afterthought.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 16 — OPPORTUNITY ASSESSMENT (Star Rating Matrix)
+     Layout: Rating matrix table
+     ================================================================ -->
+    <section class="slide" id="slide-16">
+      <span class="slide__number">16 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Opportunity Scoring</p>
+        <h1 class="slide-title">Opportunity Assessment Matrix</h1>
+        <h2 class="slide-subtitle">Weighted scoring across key dimensions</h2>
+      </div>
+      <div class="slide__body">
+        <table class="rating-matrix">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Korea</th>
+              <th>US</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Market Size</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Growth Rate</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Ease of Entry</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Competitive Differentiation</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Margin Potential</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td class="row-label">Risk Level (lower = better)</td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+              <td>
+                <span class="star-rating">
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span
+                    class="star-rating__star star-rating__star--filled"
+                  ></span>
+                  <span class="star-rating__star"></span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Korea: low risk, moderate reward. US: high reward, high barrier.
+          Optimal strategy: prove in Korea, scale to US.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 17 — RECOMMENDED STRATEGY (3-scenario roadmap)
+     Layout: Horizontal 3-phase roadmap
+     ================================================================ -->
+    <section class="slide" id="slide-17">
+      <span class="slide__number">17 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Strategic Recommendation</p>
+        <h1 class="slide-title">Recommended Strategy: Phased Market Entry</h1>
+      </div>
+      <div class="slide__body">
+        <div class="roadmap">
+          <div class="roadmap__phase">
+            <div class="roadmap__phase-number">1</div>
+            <div class="roadmap__phase-title">Korea Launch</div>
+            <div class="roadmap__phase-period">Months 0-6</div>
+            <ul class="roadmap__phase-list">
+              <li>Launch via Olive Young + owned DTC</li>
+              <li>Secure MFDS functional cosmetics certification</li>
+              <li>Build social proof via Korean beauty community</li>
+              <li>Establish manufacturing partnerships</li>
+              <li>Target: 10K units/month within 6 months</li>
+            </ul>
+          </div>
+          <div
+            class="roadmap__phase"
+            style="border-color: var(--accent-border)"
+          >
+            <div class="roadmap__phase-number">2</div>
+            <div class="roadmap__phase-title">US DTC Entry</div>
+            <div class="roadmap__phase-period">Months 6-18</div>
+            <ul class="roadmap__phase-list">
+              <li>Launch Amazon US storefront</li>
+              <li>Begin FDA OTC compliance process</li>
+              <li>Seed TikTok / Reddit influencer program</li>
+              <li>Open Sephora/Ulta partnership discussions</li>
+              <li>Target: $1M US revenue in first 12 months</li>
+            </ul>
+          </div>
+          <div class="roadmap__phase scenario-card--recommended">
+            <div class="roadmap__phase-number">3</div>
+            <div class="roadmap__phase-title">US Mass Scale</div>
+            <div class="roadmap__phase-period">Months 18-36</div>
+            <ul class="roadmap__phase-list">
+              <li>Enter Target/Walmart with FDA-compliant SKUs</li>
+              <li>Secure dermatologist endorsement program</li>
+              <li>Consider US-based manufacturing for cost</li>
+              <li>Explore strategic partnership or acquisition</li>
+              <li>Target: $10M+ US revenue, profitability</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="gold-divider" />
+
+        <h2 class="slide-subtitle">Three Scenarios</h2>
+        <div class="scenarios">
+          <div class="scenario-card">
+            <div class="scenario-card__title">Conservative</div>
+            <p class="body-text" style="font-size: var(--fs-footnote)">
+              Korea-only focus. Lower risk, limited upside. Revenue ceiling:
+              ~$5M/yr
+            </p>
+          </div>
+          <div class="scenario-card scenario-card--recommended">
+            <div class="scenario-card__title">Base Case</div>
+            <p class="body-text" style="font-size: var(--fs-footnote)">
+              Korea + US DTC. Balanced risk-reward. Revenue target: $10-15M/yr
+              by Year 3
+            </p>
+          </div>
+          <div class="scenario-card">
+            <div class="scenario-card__title">Aggressive</div>
+            <p class="body-text" style="font-size: var(--fs-footnote)">
+              Korea + US mass retail. Higher capital needs. Revenue target:
+              $25M+/yr by Year 3
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >Base case recommended: Prove product-market fit in Korea, scale via
+          US DTC, then expand to mass retail with FDA compliance.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 18 — RISK SUMMARY
+     Layout: Risk cards with indicators + mitigation
+     ================================================================ -->
+    <section class="slide" id="slide-18">
+      <span class="slide__number">18 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Risk Assessment</p>
+        <h1 class="slide-title">Key Risks & Mitigation</h1>
+      </div>
+      <div class="slide__body">
+        <div class="risk-matrix">
+          <div class="risk-item risk-item--high">
+            <div class="risk-item__header">
+              <span class="risk-item__title">FDA Regulatory Delay</span>
+              <span class="indicator indicator--red"
+                ><span class="indicator__dot"></span>High</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Begin FDA OTC monograph compliance in Phase 1; engage
+              US regulatory counsel early; consider formulating with existing
+              GRASE-approved ingredients only for initial US launch.
+            </p>
+          </div>
+          <div class="risk-item risk-item--high">
+            <div class="risk-item__header">
+              <span class="risk-item__title">US Distribution Lock-out</span>
+              <span class="indicator indicator--red"
+                ><span class="indicator__dot"></span>High</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Build Amazon #1 position first as leverage for retail
+              buyer meetings; secure Sephora "K-beauty sunscreen" shelf before
+              mass retail approach.
+            </p>
+          </div>
+          <div class="risk-item risk-item--medium">
+            <div class="risk-item__header">
+              <span class="risk-item__title">Korean Market Saturation</span>
+              <span class="indicator indicator--yellow"
+                ><span class="indicator__dot"></span>Medium</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Differentiate via unique IP (proprietary filter
+              combinations); focus on underserved sub-segments (men's, sensitive
+              skin, baby).
+            </p>
+          </div>
+          <div class="risk-item risk-item--medium">
+            <div class="risk-item__header">
+              <span class="risk-item__title">Supply Chain Disruption</span>
+              <span class="indicator indicator--yellow"
+                ><span class="indicator__dot"></span>Medium</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Dual-source critical UV filter ingredients; maintain
+              90-day safety stock; establish secondary OEM relationship.
+            </p>
+          </div>
+          <div class="risk-item risk-item--medium">
+            <div class="risk-item__header">
+              <span class="risk-item__title">IP / Counterfeit Risk</span>
+              <span class="indicator indicator--yellow"
+                ><span class="indicator__dot"></span>Medium</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Register trademarks in US/Korea before launch;
+              implement anti-counterfeit packaging; monitor Amazon 3P sellers
+              proactively.
+            </p>
+          </div>
+          <div class="risk-item risk-item--low">
+            <div class="risk-item__header">
+              <span class="risk-item__title">Currency / FX Volatility</span>
+              <span class="indicator indicator--green"
+                ><span class="indicator__dot"></span>Low</span
+              >
+            </div>
+            <p class="risk-item__mitigation">
+              Mitigation: Price in local currency; hedge 6-month forward
+              contracts on major USD/KRW exposure above $500K.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway__icon">!</div>
+        <span class="takeaway__text"
+          >FDA compliance and US distribution access are the two highest-impact
+          risks; both require early investment in Phase 1.</span
+        >
+      </div>
+    </section>
+
+    <!-- ================================================================
+     SLIDE 19 — APPENDIX (Sources)
+     Layout: Numbered source list
+     ================================================================ -->
+    <section class="slide" id="slide-19">
+      <span class="slide__number">19 / 19</span>
+      <div class="slide__header">
+        <p class="overline">Reference</p>
+        <h1 class="slide-title">Appendix: Sources</h1>
+      </div>
+      <div class="slide__body">
+        <div class="grid-2">
+          <div>
+            <h2 class="slide-subtitle">Market Data</h2>
+            <ul class="source-list">
+              <li data-num="1.">
+                Grand View Research, "Sunscreen Market Size, Share & Trends
+                Analysis Report, 2024-2030"
+              </li>
+              <li data-num="2.">
+                Euromonitor International, "Sun Care Global Industry Overview
+                2024"
+              </li>
+              <li data-num="3.">
+                Mordor Intelligence, "South Korea Sun Care Market Analysis
+                2024-2029"
+              </li>
+              <li data-num="4.">
+                Statista, "Sunscreen Market Revenue Worldwide 2024"
+              </li>
+              <li data-num="5.">
+                KHISS (Korea Health Industry Statistics), "Cosmetics Market
+                Trend Report 2024"
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="slide-subtitle">Regulatory & Industry</h2>
+            <ul class="source-list">
+              <li data-num="6.">
+                FDA, "Sunscreen Drug Products for Over-the-Counter Human Use"
+                (21 CFR 352)
+              </li>
+              <li data-num="7.">
+                MFDS, "Functional Cosmetics Review Guidelines 2024"
+              </li>
+              <li data-num="8.">
+                Korea International Trade Association (KITA), "Cosmetics Export
+                Statistics 2024"
+              </li>
+              <li data-num="9.">
+                ITC Trade Map, "HS 330499 Sun Protection Preparations Export
+                Data"
+              </li>
+              <li data-num="10.">
+                Mintel, "US Sunscreen Consumer Trends Report 2024"
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="gold-divider" />
+
+        <div class="grid-2 mt-6">
+          <div>
+            <h2 class="slide-subtitle">Competitive Intelligence</h2>
+            <ul class="source-list">
+              <li data-num="11.">AmorePacific Annual Report 2024</li>
+              <li data-num="12.">
+                LG Household & Health Care Annual Report 2024
+              </li>
+              <li data-num="13.">
+                J&J Consumer Health Investor Presentation Q4 2024
+              </li>
+              <li data-num="14.">
+                Beiersdorf Investor Relations, Sun Care Segment Overview
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="slide-subtitle">Consumer & Trend</h2>
+            <ul class="source-list">
+              <li data-num="15.">
+                Reddit r/SkincareAddiction, "K-beauty Sunscreen Megathread"
+                (community data)
+              </li>
+              <li data-num="16.">
+                TikTok Analytics, "#KoreanSunscreen" trending data
+              </li>
+              <li data-num="17.">
+                Amazon Best Sellers, "Sunscreen" Category Rankings (Dec 2024)
+              </li>
+              <li data-num="18.">Olive Young Annual Trend Report 2024</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="footnote">
+          This report is prepared for internal strategic review purposes only.
+          Market data is based on best available estimates from cited sources
+          and may contain approximations. Classification: Confidential.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+     NAVIGATION (optional keyboard nav)
+     ================================================================ -->
+    <script>
+      (function () {
+        const slides = document.querySelectorAll(".slide");
+        let current = 0;
+
+        function goToSlide(n) {
+          if (n < 0 || n >= slides.length) return;
+          current = n;
+          slides[n].scrollIntoView({ behavior: "smooth" });
+        }
+
+        document.addEventListener("keydown", function (e) {
+          if (
+            e.key === "ArrowDown" ||
+            e.key === "ArrowRight" ||
+            e.key === " "
+          ) {
+            e.preventDefault();
+            goToSlide(current + 1);
+          } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+            e.preventDefault();
+            goToSlide(current - 1);
+          } else if (e.key === "Home") {
+            e.preventDefault();
+            goToSlide(0);
+          } else if (e.key === "End") {
+            e.preventDefault();
+            goToSlide(slides.length - 1);
+          }
+        });
+
+        // Track current slide on scroll
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                current = Array.from(slides).indexOf(entry.target);
+              }
+            });
+          },
+          { threshold: 0.5 },
+        );
+
+        slides.forEach((slide) => observer.observe(slide));
+      })();
+    </script>
+  </body>
+</html>
