@@ -1,0 +1,29 @@
+# Business files
+*.xlsx
+*.ods
+*.csv
+*.docx
+*.pdf
+*.zip
+*.txt
+~$*
+
+# Directories
+node_modules/
+.claude/
+screenshots/
+trip_mapping_tool-main/
+ygg_mapping_tool/
+mapping hub function/
+계약서/
+마케팅/
+재고/
+회의록/
+
+# Generated
+sunscreen_presentation.html
+font-preview.html
+statusline_preview.html
+capture_slides.js
+package.json
+package-lock.json

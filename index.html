@@ -1,0 +1,2530 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>자외선 차단제 시장 분석: Korea vs USA 2025</title>
+    <style>
+      /* ========== RESET & ROOT ========== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1a2e;
+        --bg2: #1b2a4a;
+        --bg3: #243558;
+        --accent: #c5a55a;
+        --accent2: #d4ba7a;
+        --accent-dim: rgba(197, 165, 90, 0.12);
+        --accent-border: rgba(197, 165, 90, 0.3);
+        --text: #e8e6e1;
+        --text2: #8a92a6;
+        --text-inv: #0f1a2e;
+        --pos: #3ec97a;
+        --pos-bg: rgba(62, 201, 122, 0.12);
+        --neg: #e85454;
+        --neg-bg: rgba(232, 84, 84, 0.12);
+        --neu: #e8a838;
+        --neu-bg: rgba(232, 168, 56, 0.12);
+        --border: rgba(255, 255, 255, 0.08);
+        --border2: rgba(255, 255, 255, 0.15);
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        --ff:
+          "Malgun Gothic", "Segoe UI", -apple-system, BlinkMacSystemFont,
+          system-ui, sans-serif;
+        --fs-h1: clamp(1.6rem, 2.4vw+0.5rem, 2.6rem);
+        --fs-h2: clamp(1rem, 1.3vw+0.3rem, 1.5rem);
+        --fs-body: clamp(0.8rem, 0.9vw+0.2rem, 1rem);
+        --fs-hero: clamp(2rem, 3.5vw+0.5rem, 3.5rem);
+        --fs-sm: clamp(0.7rem, 0.7vw+0.15rem, 0.85rem);
+        --fs-xs: clamp(0.6rem, 0.6vw+0.1rem, 0.75rem);
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--ff);
+        line-height: 1.5;
+      }
+
+      /* ========== PROGRESS BAR ========== */
+      #progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        z-index: 100;
+        transition: width 0.4s ease;
+        width: 0;
+      }
+
+      /* ========== SLIDE VIEWPORT ========== */
+      #slide-viewport {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(52px);
+        transition:
+          opacity 0.46s ease,
+          transform 0.46s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 60px 40px 80px;
+      }
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+        z-index: 10;
+      }
+      .slide.leaving-left {
+        opacity: 0;
+        transform: translateX(-52px);
+        pointer-events: none;
+        z-index: 5;
+      }
+      .slide.leaving-right {
+        opacity: 0;
+        transform: translateX(52px);
+        pointer-events: none;
+        z-index: 5;
+      }
+      .slide-inner {
+        width: 100%;
+        max-width: 1000px;
+        overflow-y: auto;
+        max-height: calc(100vh - 140px);
+      }
+      .slide-inner::-webkit-scrollbar {
+        width: 3px;
+      }
+      .slide-inner::-webkit-scrollbar-thumb {
+        background: var(--accent-border);
+        border-radius: 3px;
+      }
+
+      /* ========== NAVIGATION ========== */
+      #slide-number {
+        position: fixed;
+        bottom: 16px;
+        right: 24px;
+        font-size: var(--fs-sm);
+        color: var(--text2);
+        z-index: 50;
+        letter-spacing: 0.1em;
+      }
+      #nav-buttons {
+        position: fixed;
+        bottom: 14px;
+        left: 24px;
+        display: flex;
+        gap: 8px;
+        z-index: 50;
+      }
+      #nav-buttons button {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+      #nav-buttons button:hover {
+        background: rgba(197, 165, 90, 0.2);
+      }
+      #slide-dots {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        z-index: 50;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .dot.active {
+        background: var(--accent);
+        transform: scale(1.3);
+      }
+
+      /* ========== SAVE BUTTON & MODAL ========== */
+      #btn-save {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-size: 1rem;
+        padding: 6px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: background 0.2s;
+      }
+      #btn-save:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      #save-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #save-modal[hidden] {
+        display: none;
+      }
+      #save-modal-inner {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: 14px;
+        padding: 28px 32px;
+        max-width: 480px;
+        width: 90%;
+        color: var(--text);
+      }
+      #save-modal-inner h3 {
+        margin: 0 0 16px;
+        font-size: 1.1rem;
+      }
+      #save-modal-inner table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+      #save-modal-inner th,
+      #save-modal-inner td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      #save-modal-inner th {
+        opacity: 0.6;
+        font-weight: 600;
+      }
+      #save-modal-close {
+        margin-top: 20px;
+        padding: 8px 20px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--text-inv);
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      /* ========== TYPOGRAPHY ========== */
+      .overline {
+        font-size: var(--fs-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--accent);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      h1.slide-title {
+        font-size: var(--fs-h1);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 10px;
+        letter-spacing: -0.02em;
+      }
+      h2.slide-subtitle {
+        font-size: var(--fs-h2);
+        font-weight: 400;
+        color: var(--text2);
+        line-height: 1.4;
+        margin-bottom: 20px;
+      }
+      .gold {
+        color: var(--accent);
+      }
+      .green {
+        color: var(--pos);
+      }
+      .red {
+        color: var(--neg);
+      }
+      .amber {
+        color: var(--neu);
+      }
+
+      /* ========== TAKEAWAY BAR ========== */
+      .takeaway {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 40px;
+        background: linear-gradient(
+          90deg,
+          rgba(197, 165, 90, 0.08),
+          rgba(197, 165, 90, 0.03)
+        );
+        border-top: 1px solid var(--accent-border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .takeaway-icon {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+      .takeaway-text {
+        font-size: var(--fs-sm);
+        color: var(--accent2);
+        font-style: italic;
+      }
+
+      /* ========== STAT BOXES ========== */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .stat-box {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+      }
+      .stat-val {
+        font-size: var(--fs-hero);
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1.1;
+      }
+      .stat-label {
+        font-size: var(--fs-sm);
+        color: var(--text2);
+        margin-top: 6px;
+      }
+      .stat-delta {
+        font-size: var(--fs-xs);
+        margin-top: 4px;
+        font-weight: 600;
+      }
+      .stat-delta.up {
+        color: var(--pos);
+      }
+      .stat-delta.down {
+        color: var(--neg);
+      }
+
+      /* ========== DATA TABLE ========== */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--fs-body);
+        margin: 12px 0;
+      }
+      .data-table th {
+        background: var(--bg3);
+        color: var(--accent);
+        font-weight: 600;
+        text-align: left;
+        padding: 10px 14px;
+        font-size: var(--fs-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid var(--accent-border);
+      }
+      .data-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .data-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .data-table tr:hover td {
+        background: rgba(197, 165, 90, 0.05);
+      }
+
+      /* ========== COMPARISON CARDS ========== */
+      .compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 16px 0;
+      }
+      .compare-card {
+        background: var(--bg2);
+        border-radius: 12px;
+        padding: 20px;
+        border-top: 3px solid var(--border);
+      }
+      .compare-card.kr {
+        border-top-color: var(--pos);
+      }
+      .compare-card.us {
+        border-top-color: #4a90d9;
+      }
+      .compare-card h3 {
+        font-size: var(--fs-body);
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .compare-card ul {
+        list-style: none;
+        font-size: var(--fs-sm);
+      }
+      .compare-card li {
+        padding: 5px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+      }
+      .compare-card li:last-child {
+        border-bottom: none;
+      }
+
+      /* ========== BAR CHART ========== */
+      .bar-chart {
+        margin: 12px 0;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        margin: 8px 0;
+        gap: 10px;
+      }
+      .bar-label {
+        width: 120px;
+        font-size: var(--fs-sm);
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .bar-track {
+        flex: 1;
+        height: 24px;
+        background: var(--bg2);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.6s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 8px;
+        font-size: var(--fs-xs);
+        font-weight: 600;
+        color: var(--text-inv);
+      }
+      .bar-fill.gold {
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+      }
+      .bar-fill.blue {
+        background: linear-gradient(90deg, #4a90d9, #6cb0f0);
+      }
+      .bar-fill.green {
+        background: linear-gradient(90deg, var(--pos), #5dd99a);
+      }
+
+      /* ========== TRAFFIC LIGHT ========== */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: var(--fs-xs);
+        font-weight: 600;
+      }
+      .pill.g {
+        background: var(--pos-bg);
+        color: var(--pos);
+      }
+      .pill.r {
+        background: var(--neg-bg);
+        color: var(--neg);
+      }
+      .pill.y {
+        background: var(--neu-bg);
+        color: var(--neu);
+      }
+      .pill::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+      .pill.g::before {
+        background: var(--pos);
+      }
+      .pill.r::before {
+        background: var(--neg);
+      }
+      .pill.y::before {
+        background: var(--neu);
+      }
+
+      /* ========== TIMELINE ========== */
+      .timeline {
+        position: relative;
+        padding-left: 28px;
+        margin: 16px 0;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent-border);
+      }
+      .tl-item {
+        position: relative;
+        margin-bottom: 18px;
+      }
+      .tl-item::before {
+        content: "";
+        position: absolute;
+        left: -24px;
+        top: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 2px solid var(--bg);
+      }
+      .tl-year {
+        font-size: var(--fs-xs);
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+      }
+      .tl-content {
+        font-size: var(--fs-sm);
+        color: var(--text);
+        margin-top: 2px;
+      }
+
+      /* ========== ROADMAP ========== */
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .phase {
+        background: var(--bg2);
+        border-radius: 12px;
+        padding: 18px;
+        border-left: 3px solid var(--accent);
+      }
+      .phase-num {
+        font-size: var(--fs-xs);
+        color: var(--accent);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+      .phase h3 {
+        font-size: var(--fs-body);
+        font-weight: 700;
+        margin: 6px 0 10px;
+      }
+      .phase ul {
+        list-style: none;
+        font-size: var(--fs-sm);
+      }
+      .phase li {
+        padding: 3px 0;
+        padding-left: 14px;
+        position: relative;
+      }
+      .phase li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+      }
+
+      /* ========== STAR RATING ========== */
+      .stars {
+        color: var(--accent);
+        letter-spacing: 2px;
+        font-size: var(--fs-body);
+      }
+
+      /* ========== GRID UTILS ========== */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .mt-12 {
+        margin-top: 12px;
+      }
+      .mt-16 {
+        margin-top: 16px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .footnote {
+        font-size: var(--fs-xs);
+        color: var(--text2);
+        margin-top: 16px;
+        font-style: italic;
+      }
+
+      /* ========== TITLE SLIDE SPECIAL ========== */
+      .title-slide {
+        text-align: center;
+      }
+      .title-slide h1 {
+        font-size: clamp(2rem, 3vw+0.5rem, 3.2rem);
+        margin-bottom: 12px;
+      }
+      .title-slide .divider {
+        width: 80px;
+        height: 3px;
+        background: var(--accent);
+        margin: 20px auto;
+        border-radius: 2px;
+      }
+      .title-meta {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        font-size: var(--fs-xs);
+        color: var(--text2);
+        margin-top: 24px;
+        letter-spacing: 0.05em;
+      }
+      .title-meta span {
+        padding: 4px 12px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+      }
+
+      /* ========== ICON CARDS ========== */
+      .icon-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin: 14px 0;
+      }
+      .icon-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        transition: border-color 0.2s;
+      }
+      .icon-card:hover {
+        border-color: var(--accent-border);
+      }
+      .icon-card .ic-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+      .icon-card h4 {
+        font-size: var(--fs-sm);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .icon-card p {
+        font-size: var(--fs-xs);
+        color: var(--text2);
+      }
+
+      /* ========== KEY FINDINGS ========== */
+      .findings {
+        list-style: none;
+        counter-reset: f;
+      }
+      .findings li {
+        counter-increment: f;
+        padding: 12px 14px 12px 48px;
+        border-left: 3px solid var(--accent);
+        background: var(--bg2);
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 10px;
+        position: relative;
+        font-size: var(--fs-sm);
+      }
+      .findings li::before {
+        content: counter(f);
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        color: var(--accent);
+        font-weight: 700;
+        font-size: var(--fs-body);
+      }
+      .findings li strong {
+        color: var(--text);
+        display: block;
+        margin-bottom: 2px;
+      }
+      .findings li span {
+        color: var(--text2);
+        font-size: var(--fs-xs);
+      }
+
+      /* ========== RESPONSIVE ========== */
+      @media (max-width: 768px) {
+        .slide {
+          padding: 50px 20px 70px;
+        }
+        .compare,
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .roadmap,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .bar-label {
+          width: 80px;
+        }
+        .title-meta {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress-bar"></div>
+    <div id="slide-viewport">
+      <!-- ============ SLIDE 1: TITLE ============ -->
+      <section class="slide" data-slide="1">
+        <div class="slide-inner title-slide">
+          <p class="overline">
+            Market Intelligence Report &mdash; Confidential
+          </p>
+          <h1 class="slide-title">
+            자외선 차단제 시장 분석<br /><span class="gold"
+              >Korea vs USA 2025</span
+            >
+          </h1>
+          <div class="divider"></div>
+          <h2 class="slide-subtitle">
+            사업 진출 · 투자 검토를 위한 전략적 시장 평가
+          </h2>
+          <div class="title-meta">
+            <span>2026년 3월</span>
+            <span>C-Level Review</span>
+            <span>Confidential</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 2: EXECUTIVE SUMMARY ============ -->
+      <section class="slide" data-slide="2">
+        <div class="slide-inner">
+          <p class="overline">Executive Summary</p>
+          <h1 class="slide-title">핵심 발견 5가지</h1>
+          <ol class="findings">
+            <li>
+              <strong>미국 시장은 한국의 ~77배 규모</strong
+              ><span
+                >한국 ~$1.5억(선크림 단독) vs 미국 ~$115억 — 압도적 TAM
+                기회</span
+              >
+            </li>
+            <li>
+              <strong>규제 비대칭이 한국의 구조적 우위를 만든다</strong
+              ><span
+                >한국: 기능성화장품(28종 성분) vs 미국: OTC 의약품(GRASE 2종만
+                확정)</span
+              >
+            </li>
+            <li>
+              <strong
+                >2024년 한국이 프랑스 제치고 미국 최대 선크림 수출국
+                등극</strong
+              ><span>K-뷰티 수요 + 우수한 제형 기술이 핵심 동인</span>
+            </li>
+            <li>
+              <strong>미네랄 선크림 전환 파도가 밀려오고 있다</strong
+              ><span
+                >미네랄 선크림 검색량 +168%, 2026년 시장점유율 60% 전망</span
+              >
+            </li>
+            <li>
+              <strong>스마트 머니가 선크림에 몰리는 중</strong
+              ><span
+                >Supergoop! $6-7억 밸류, 한국 뷰티 스타트업 투자 비중 5.8%→18.4%
+                (3배↑)</span
+              >
+            </li>
+          </ol>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >K-뷰티 선크림은 제형 혁신에서 구조적 우위를 보유하나, 미국 시장의
+            FDA 규제 · 소송 리스크가 핵심 과제</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 3: GLOBAL MARKET OVERVIEW ============ -->
+      <section class="slide" data-slide="3">
+        <div class="slide-inner">
+          <p class="overline">Market Context</p>
+          <h1 class="slide-title">글로벌 선크림 시장 개요</h1>
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-val">$144.5B</div>
+              <div class="stat-label">글로벌 시장 2024</div>
+              <div class="stat-delta up">CAGR 5.48%</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">~2.2%</div>
+              <div class="stat-label">한국 글로벌 비중</div>
+              <div class="stat-delta">~$3.2억</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">30-35%</div>
+              <div class="stat-label">미국 글로벌 비중</div>
+              <div class="stat-delta">최대 단일 시장</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">$203.4B</div>
+              <div class="stat-label">글로벌 전망 2030</div>
+              <div class="stat-delta up">+41% 성장</div>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-12">한국 vs 미국 시장 규모 비교</h2>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span class="bar-label">한국 (선크림)</span>
+              <div class="bar-track">
+                <div class="bar-fill gold" style="width: 2%">$1.5억</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">한국 (선케어 전체)</span>
+              <div class="bar-track">
+                <div class="bar-fill gold" style="width: 3%">$3.2억</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">미국 (선크림)</span>
+              <div class="bar-track">
+                <div class="bar-fill blue" style="width: 80%">$115.2억</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">미국 (선케어 전체)</span>
+              <div class="bar-track">
+                <div class="bar-fill blue" style="width: 100%">$143.5억</div>
+              </div>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Grand View Research(2024), Verified Market Research(2024),
+            Spherical Insights(2024)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >미국 시장은 한국의 ~77배 — 이 규모 차이가 곧 기회의 크기다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 4: KOREA MARKET ============ -->
+      <section class="slide" data-slide="4">
+        <div class="slide-inner">
+          <p class="overline">한국 시장</p>
+          <h1 class="slide-title">한국 자외선 차단제 시장 규모 & 성장</h1>
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-val">~2,000억</div>
+              <div class="stat-label">선크림 단독 (2024)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">~4,200억</div>
+              <div class="stat-label">SPF 제품 전체</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">4-8%</div>
+              <div class="stat-label">CAGR (2025-2035)</div>
+              <div class="stat-delta up">낙관적 8.41%</div>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-12">성장 동인</h2>
+          <div class="icon-cards">
+            <div class="icon-card">
+              <div class="ic-icon">🌞</div>
+              <h4>사계절 일상 사용</h4>
+              <p>20-40대 여성 보편화, 10-step 루틴 필수</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">🧴</div>
+              <h4>제형 혁신</h4>
+              <p>톤업, 쿠션SPF, 선세럼 등 12개월 120+신제품</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">🌏</div>
+              <h4>K-뷰티 수출</h4>
+              <p>수출이 핵심 성장 동력, 미국/유럽 급성장</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">📱</div>
+              <h4>SNS 기반 의사결정</h4>
+              <p>화해 앱, 유튜브, 인스타그램</p>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Spherical Insights(2024), Deep Market Insights(2024),
+            Cognitive Market Research
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >한국 시장은 성숙기이나, K-뷰티 수출 효과와 다기능 SPF 제품 확대가
+            성장을 견인</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 5: US MARKET ============ -->
+      <section class="slide" data-slide="5">
+        <div class="slide-inner">
+          <p class="overline">미국 시장</p>
+          <h1 class="slide-title">미국 자외선 차단제 시장 규모 & 성장</h1>
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-val">$115.2B</div>
+              <div class="stat-label">선크림 단독 (2024)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">$143.5B</div>
+              <div class="stat-label">Sun Care 전체</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">6.1%</div>
+              <div class="stat-label">CAGR (2024-2030)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">$214.4B</div>
+              <div class="stat-label">2030 전망</div>
+              <div class="stat-delta up">+49% 성장</div>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-12">성장 동인</h2>
+          <div class="icon-cards">
+            <div class="icon-card">
+              <div class="ic-icon">🏥</div>
+              <h4>피부암 인식 확대</h4>
+              <p>자외선 유해성 교육 강화, 의료계 권고</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">📲</div>
+              <h4>소셜미디어 선케어 교육</h4>
+              <p>TikTok, Instagram 통한 Daily SPF 트렌드</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">💎</div>
+              <h4>스킨케어 융합</h4>
+              <p>SPF 모이스처라이저, 세럼, 프라이머 급성장</p>
+            </div>
+            <div class="icon-card">
+              <div class="ic-icon">🌿</div>
+              <h4>클린뷰티 수요</h4>
+              <p>미네랄 검색 +168%, 리프세이프 트렌드</p>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Grand View Research(2024), Statista(2024), GlobeNewsWire(2024)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >미국 시장은 Daily SPF 트렌드와 클린뷰티 전환의 초기 — 성장 가속
+            구간에 진입</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 6: REGULATION ============ -->
+      <section class="slide" data-slide="6">
+        <div class="slide-inner">
+          <p class="overline">Regulatory Environment</p>
+          <h1 class="slide-title">규제 환경 비교 — 핵심 차이</h1>
+          <div class="compare">
+            <div class="compare-card kr">
+              <h3>🇰🇷 한국 (식약처/MFDS)</h3>
+              <ul>
+                <li>
+                  <span>제품 분류</span><span class="green">기능성 화장품</span>
+                </li>
+                <li><span>허가 성분</span><span class="green">~28종</span></li>
+                <li>
+                  <span>인허가 기간</span><span class="green">보고제 15일</span>
+                </li>
+                <li><span>비용</span><span class="green">25,000원</span></li>
+                <li><span>성분 자유도</span><span class="green">높음</span></li>
+                <li><span>2025 변화</span><span>신규 성분 1종 추가</span></li>
+              </ul>
+            </div>
+            <div class="compare-card us">
+              <h3>🇺🇸 미국 (FDA)</h3>
+              <ul>
+                <li>
+                  <span>제품 분류</span><span class="red">OTC 의약품</span>
+                </li>
+                <li>
+                  <span>허가 성분</span
+                  ><span class="red">GRASE 2종만 확정</span>
+                </li>
+                <li>
+                  <span>인허가 기간</span
+                  ><span class="red">6-12개월 (기존성분)</span>
+                </li>
+                <li>
+                  <span>비용</span><span class="red">신규: $1,800만+</span>
+                </li>
+                <li>
+                  <span>성분 자유도</span><span class="red">매우 낮음</span>
+                </li>
+                <li>
+                  <span>2025 변화</span><span>Bemotrizinol 승인 추진</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <table class="data-table mt-12">
+            <tr>
+              <th>관점</th>
+              <th>한국</th>
+              <th>미국</th>
+            </tr>
+            <tr>
+              <td>규제 진입 난이도</td>
+              <td><span class="pill g">낮음</span></td>
+              <td><span class="pill r">높음</span></td>
+            </tr>
+            <tr>
+              <td>성분 자유도</td>
+              <td><span class="pill g">높음 (~28종)</span></td>
+              <td><span class="pill r">낮음 (실질 2종)</span></td>
+            </tr>
+            <tr>
+              <td>규제 변화 리스크</td>
+              <td><span class="pill y">중간</span></td>
+              <td><span class="pill r">높음</span></td>
+            </tr>
+          </table>
+          <p class="footnote">
+            출처: 식약처, FDA Federal Register OTC000039, Holland & Knight(2025)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >규제 비대칭(화장품 vs 의약품)이 한국의 제형 혁신 우위를 구조적으로
+            뒷받침한다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 7: CONSUMER TRENDS ============ -->
+      <section class="slide" data-slide="7">
+        <div class="slide-inner">
+          <p class="overline">Consumer Insights</p>
+          <h1 class="slide-title">소비자 트렌드 비교</h1>
+          <table class="data-table">
+            <tr>
+              <th>항목</th>
+              <th>🇰🇷 한국</th>
+              <th>🇺🇸 미국</th>
+            </tr>
+            <tr>
+              <td>일상 사용률</td>
+              <td><strong class="green">매우 높음</strong> (20-40대 보편화)</td>
+              <td>매일 12%, 필요시 41%</td>
+            </tr>
+            <tr>
+              <td>주요 구매 시기</td>
+              <td>3-5월 집중 + 연중 기저 수요</td>
+              <td>여름 집중 (seasonal)</td>
+            </tr>
+            <tr>
+              <td>구매 기준 1순위</td>
+              <td><strong>사용감</strong> (가벼움, 백탁 없음)</td>
+              <td><strong>차단력</strong> (UVB/UVA 53%)</td>
+            </tr>
+            <tr>
+              <td>정보 채널</td>
+              <td>화해 앱, 유튜브, 인스타</td>
+              <td>TikTok, Instagram, 피부과 의사</td>
+            </tr>
+            <tr>
+              <td>건강 우려</td>
+              <td>중간</td>
+              <td>
+                <strong class="red">24%</strong> 화학적 선크림 유해 우려 (↑)
+              </td>
+            </tr>
+          </table>
+          <h2 class="slide-subtitle mt-16">선호 제형 비교</h2>
+          <table class="data-table">
+            <tr>
+              <th>제형</th>
+              <th>한국</th>
+              <th>미국</th>
+            </tr>
+            <tr>
+              <td>로션/크림</td>
+              <td>최대 (USD 124.4M)</td>
+              <td>최대 (48%)</td>
+            </tr>
+            <tr>
+              <td>스틱</td>
+              <td><span class="pill g">최고 성장률</span></td>
+              <td>성장 중 (K-뷰티 영향)</td>
+            </tr>
+            <tr>
+              <td>세럼/에센스</td>
+              <td><span class="pill g">급성장</span></td>
+              <td><span class="pill g">급성장</span></td>
+            </tr>
+            <tr>
+              <td>쿠션/패드</td>
+              <td>
+                <strong class="gold">한국 고유</strong> (120+ 신제품/12개월)
+              </td>
+              <td>미미</td>
+            </tr>
+            <tr>
+              <td>틴티드</td>
+              <td>톤업 선크림 주류</td>
+              <td><span class="pill g">전월비 27.5%↑</span></td>
+            </tr>
+          </table>
+          <p class="footnote">
+            출처: CivicScience(2025), Deep Market Insights(2024), Evidnt(2025)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >미국 소비자의 Clean Beauty + 미네랄 + K-beauty 선호가 동시에 한국
+            제품을 가리킨다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 8: TECH TRENDS ============ -->
+      <section class="slide" data-slide="8">
+        <div class="slide-inner">
+          <p class="overline">Technology & Innovation</p>
+          <h1 class="slide-title">제형 & 기술 트렌드</h1>
+          <div class="stats">
+            <div class="stat-box">
+              <div class="stat-val" style="color: var(--pos)">+168%</div>
+              <div class="stat-label">미네랄 선크림 검색량</div>
+              <div class="stat-delta">2025.1-5 기준</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">60%</div>
+              <div class="stat-label">미네랄 시장점유율 전망</div>
+              <div class="stat-delta">2026년</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val" style="color: var(--pos)">+27.5%</div>
+              <div class="stat-label">틴티드 선크림 매출</div>
+              <div class="stat-delta">전월 대비</div>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-12">공통 & 고유 트렌드</h2>
+          <div class="compare">
+            <div class="compare-card kr">
+              <h3>🇰🇷 한국 고유</h3>
+              <ul>
+                <li><span>쿠션 SPF</span><span>12개월 120+신제품</span></li>
+                <li><span>선패치</span><span>골프/등산 집중보호</span></li>
+                <li>
+                  <span>블루라이트 차단</span><span>디지털+환경 복합</span>
+                </li>
+                <li>
+                  <span>멀티 컬러 틴티드</span><span>다양한 피부톤 대응</span>
+                </li>
+              </ul>
+            </div>
+            <div class="compare-card us">
+              <h3>🇺🇸 미국 고유</h3>
+              <ul>
+                <li>
+                  <span>미네랄 중심 혁신</span
+                  ><span>GRASE→자연스러운 방향</span>
+                </li>
+                <li>
+                  <span>Bemotrizinol 도입</span><span>20년만 신규 UV필터</span>
+                </li>
+                <li>
+                  <span>포용성(Inclusivity)</span
+                  ><span>다인종 피부톤 대응</span>
+                </li>
+                <li><span>벤젠 프리</span><span>안전성 강조</span></li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Accio/Google Trends(2025), GlobeNewsWire(2025), Evidnt(2025)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >한국은 28개 UV 필터 활용 제형 혁신에서 3-5년 앞서 있으며, 이것이
+            프리미엄 포지셔닝의 근거</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 9: COMPETITION KOREA ============ -->
+      <section class="slide" data-slide="9">
+        <div class="slide-inner">
+          <p class="overline">Competitive Landscape</p>
+          <h1 class="slide-title">경쟁 구도 — 한국</h1>
+          <h2 class="slide-subtitle">
+            대기업 양강 체제 약화, 인디 브랜드 급부상
+          </h2>
+          <table class="data-table">
+            <tr>
+              <th>브랜드</th>
+              <th>포지셔닝</th>
+              <th>핵심 특징</th>
+            </tr>
+            <tr>
+              <td><strong>라운드랩</strong></td>
+              <td>인디 대표</td>
+              <td>NBC 글로벌 1위 선정, 올리브영 인기 1위</td>
+            </tr>
+            <tr>
+              <td><strong>뷰티오브조선</strong></td>
+              <td>한방 컨셉</td>
+              <td>미국/유럽 인기 급상승, 아마존 베스트셀러</td>
+            </tr>
+            <tr>
+              <td><strong>셀퓨전씨</strong></td>
+              <td>더마 선크림</td>
+              <td>브랜드평판 상위권, 셀트리온 자회사</td>
+            </tr>
+            <tr>
+              <td><strong>구달</strong> (클리오)</td>
+              <td>진정 선크림</td>
+              <td>올리브영 어워즈 수상, 어성초 라인</td>
+            </tr>
+            <tr>
+              <td><strong>달바</strong></td>
+              <td>프리미엄 인디</td>
+              <td>글로벌 인지도 상승 중</td>
+            </tr>
+            <tr>
+              <td><strong>코스알엑스</strong></td>
+              <td>시카 선크림</td>
+              <td>미국 시장 강세</td>
+            </tr>
+          </table>
+          <div class="grid-2 mt-16">
+            <div>
+              <h2 class="slide-subtitle">시장 구조 변화</h2>
+              <ul style="font-size: var(--fs-sm); list-style: none">
+                <li style="padding: 4px 0">
+                  • 아모레퍼시픽 + LG생건:
+                  <strong class="red">2024년 실적 하락</strong>
+                </li>
+                <li style="padding: 4px 0">
+                  • 에이피알(APR): LG생건 매출 추월 →
+                  <strong class="gold">지각변동</strong>
+                </li>
+                <li style="padding: 4px 0">
+                  • ODM(한국콜마, 코스맥스): 인디 브랜드 성장 인프라
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 class="slide-subtitle">경쟁 포화도</h2>
+              <ul style="font-size: var(--fs-sm); list-style: none">
+                <li style="padding: 4px 0">
+                  • 중저가 볼륨: <span class="pill r">높음</span>
+                </li>
+                <li style="padding: 4px 0">
+                  • 더마코스메틱: <span class="pill y">중간</span>
+                </li>
+                <li style="padding: 4px 0">
+                  • 비건/클린: <span class="pill g">중-하 (기회)</span>
+                </li>
+                <li style="padding: 4px 0">
+                  • 프리미엄 안티에이징:
+                  <span class="pill g">중-하 (기회)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: 삼정KPMG, 유진투자증권, THE VC, KED Global
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >인디 브랜드가 대기업보다 먼저 미국을 점령하고 있다 — 한국 내 경쟁
+            심화가 해외 진출을 가속</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 10: COMPETITION US ============ -->
+      <section class="slide" data-slide="10">
+        <div class="slide-inner">
+          <p class="overline">Competitive Landscape</p>
+          <h1 class="slide-title">경쟁 구도 — 미국</h1>
+          <h2 class="slide-subtitle">
+            상위 3사가 46% 장악, 프리미엄 세그먼트에 기회
+          </h2>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span class="bar-label">Coppertone</span>
+              <div class="bar-track">
+                <div class="bar-fill blue" style="width: 22%">22%</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Banana Boat</span>
+              <div class="bar-track">
+                <div class="bar-fill blue" style="width: 13%">13%</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Neutrogena</span>
+              <div class="bar-track">
+                <div class="bar-fill blue" style="width: 11%">11%</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Supergoop!</span>
+              <div class="bar-track">
+                <div class="bar-fill gold" style="width: 8%">↑</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">La Roche-Posay</span>
+              <div class="bar-track">
+                <div class="bar-fill gold" style="width: 7%">↑</div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">EltaMD</span>
+              <div class="bar-track">
+                <div class="bar-fill gold" style="width: 6%">↑</div>
+              </div>
+            </div>
+          </div>
+          <div class="stats mt-12">
+            <div
+              class="stat-box"
+              style="border: 1px solid var(--accent-border)"
+            >
+              <div class="stat-val">$6-7억</div>
+              <div class="stat-label">Supergoop! 밸류에이션</div>
+              <div class="stat-delta">Blackstone 2021년 인수</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">Mass</div>
+              <div class="stat-label">상위 3사 포지셔닝</div>
+              <div class="stat-delta">가격 경쟁 치열</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">Prestige</div>
+              <div class="stat-label">성장 세그먼트</div>
+              <div class="stat-delta up">K-뷰티 진입 여지 큼</div>
+            </div>
+          </div>
+          <p class="footnote">출처: Evidnt(2025), Grand View Research(2024)</p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >Mass는 대형 CPG가 장악 — Masstige~Prestige 영역에 K-뷰티의 White
+            Space가 존재한다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 11: K-BEAUTY PENETRATION ============ -->
+      <section class="slide" data-slide="11">
+        <div class="slide-inner">
+          <p class="overline">K-Beauty Momentum</p>
+          <h1 class="slide-title">K-뷰티의 미국 시장 침투</h1>
+          <div class="stats">
+            <div class="stat-box" style="border: 2px solid var(--accent)">
+              <div class="stat-val" style="font-size: clamp(2.5rem, 4vw, 4rem)">
+                #1
+              </div>
+              <div class="stat-label">미국 선크림 수출국 (2024)</div>
+              <div class="stat-delta up">프랑스를 제치고 1위</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val" style="color: var(--pos)">+53%</div>
+              <div class="stat-label">K-뷰티 미국 매출 YoY</div>
+              <div class="stat-delta">2025 Q1 기준</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val" style="color: var(--pos)">+38%</div>
+              <div class="stat-label">Ulta K-스킨케어 매출</div>
+              <div class="stat-delta">2025 Q1 기준</div>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-12">주요 진출 브랜드 & 성과</h2>
+          <table class="data-table">
+            <tr>
+              <th>브랜드</th>
+              <th>채널</th>
+              <th>성과</th>
+            </tr>
+            <tr>
+              <td>COSRX</td>
+              <td>Amazon, Ulta</td>
+              <td>LA/NY 물류센터 확대</td>
+            </tr>
+            <tr>
+              <td>Beauty of Joseon</td>
+              <td>Amazon</td>
+              <td><strong class="gold">아마존 베스트셀러</strong> 달성</td>
+            </tr>
+            <tr>
+              <td>Kahi</td>
+              <td>Amazon, DTC</td>
+              <td>선스틱 제품으로 시장 진입</td>
+            </tr>
+            <tr>
+              <td>Medicube (APR)</td>
+              <td>Walmart, Target</td>
+              <td>대형 유통 입점 추진 중</td>
+            </tr>
+            <tr>
+              <td>Laneige</td>
+              <td>Sephora</td>
+              <td>프리미엄 포지셔닝 성공</td>
+            </tr>
+          </table>
+          <div class="grid-2 mt-12">
+            <div
+              style="
+                background: var(--accent-dim);
+                padding: 14px;
+                border-radius: 10px;
+                border-left: 3px solid var(--accent);
+              "
+            >
+              <h4
+                style="
+                  font-size: var(--fs-sm);
+                  color: var(--accent);
+                  margin-bottom: 6px;
+                "
+              >
+                경쟁 우위 요인
+              </h4>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text);
+                "
+              >
+                <li>✓ 우수한 텍스처 (백탁 없음, 가벼운 사용감)</li>
+                <li>✓ 스킨케어 성분 결합 (히알루론산, 나이아신아마이드)</li>
+                <li>✓ 가격 경쟁력 (동급 품질 대비 20-40% 저렴)</li>
+                <li>✓ Gen Z/Millennial K-뷰티 문화적 인기</li>
+              </ul>
+            </div>
+            <div
+              style="
+                background: var(--neg-bg);
+                padding: 14px;
+                border-radius: 10px;
+                border-left: 3px solid var(--neg);
+              "
+            >
+              <h4
+                style="
+                  font-size: var(--fs-sm);
+                  color: var(--neg);
+                  margin-bottom: 6px;
+                "
+              >
+                주의 사항
+              </h4>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text);
+                "
+              >
+                <li>⚠ FDA OTC Drug 규정 준수 절대적 전제조건</li>
+                <li>⚠ 벤젠 오염 소송 리스크 관리 필요</li>
+                <li>⚠ SPF 표시 기준 차이 (PA 미사용)</li>
+                <li>⚠ 후발 진입자 증가에 따른 경쟁 심화</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Awisee(2025), Fashionista(2025), Korea Customs Service
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >이것은 트렌드가 아니라 구조적 전환 — K-뷰티 선크림의 미국 시장
+            지위가 역대 최고 수준</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 12: DISTRIBUTION ============ -->
+      <section class="slide" data-slide="12">
+        <div class="slide-inner">
+          <p class="overline">Distribution Channels</p>
+          <h1 class="slide-title">유통 채널 비교</h1>
+          <div class="compare">
+            <div class="compare-card kr">
+              <h3>🇰🇷 한국</h3>
+              <ul>
+                <li>
+                  <span><strong>올리브영</strong></span
+                  ><span>H&B 1위, 매출 4.25조</span>
+                </li>
+                <li><span>쿠팡</span><span>이커머스 1위</span></li>
+                <li><span>네이버</span><span>인디 D2C 핵심 채널</span></li>
+                <li><span>무신사 뷰티</span><span>거래액 2배↑</span></li>
+                <li><span>다이소</span><span>초저가 뷰티 채널</span></li>
+                <li><span>약국</span><span>$146.6M, 신뢰 채널</span></li>
+              </ul>
+            </div>
+            <div class="compare-card us">
+              <h3>🇺🇸 미국</h3>
+              <ul>
+                <li>
+                  <span><strong>Walmart/Target</strong></span
+                  ><span>48.5% (최대)</span>
+                </li>
+                <li><span>드럭스토어</span><span>CVS, Walgreens ~20%</span></li>
+                <li><span>Amazon</span><span>뷰티 이커머스 1위</span></li>
+                <li><span>Sephora/Ulta</span><span>프레스티지 성장</span></li>
+                <li><span>DTC</span><span>니치 브랜드 핵심</span></li>
+                <li><span>온라인 전체</span><span>뷰티 41%가 온라인</span></li>
+              </ul>
+            </div>
+          </div>
+          <table class="data-table mt-12">
+            <tr>
+              <th>지표</th>
+              <th>한국</th>
+              <th>미국</th>
+            </tr>
+            <tr>
+              <td>온라인 비중</td>
+              <td>~30% (올리브영 기준)</td>
+              <td>~41% (뷰티 전체)</td>
+            </tr>
+            <tr>
+              <td>온라인 성장률</td>
+              <td>27% YoY</td>
+              <td>지속 성장</td>
+            </tr>
+            <tr>
+              <td>게이트키퍼</td>
+              <td><strong>올리브영</strong> (입점=성패)</td>
+              <td>없음 (다채널)</td>
+            </tr>
+            <tr>
+              <td>K-뷰티 진입 최적</td>
+              <td>네이버→올리브영</td>
+              <td><strong>Amazon+DTC→Sephora/Ulta</strong></td>
+            </tr>
+          </table>
+          <p class="footnote">
+            출처: CJ올리브영 IR(2025), Front Row Group(2024), Grand View
+            Research(2024)
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >한국은 올리브영 집중 리스크, 미국은 Amazon→Sephora/Ulta 단계적
+            진입이 최적 경로</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 13: PRICING ============ -->
+      <section class="slide" data-slide="13">
+        <div class="slide-inner">
+          <p class="overline">Pricing Strategy</p>
+          <h1 class="slide-title">가격 경쟁력 비교</h1>
+          <h2 class="slide-subtitle">50ml 기준 세그먼트별 비교</h2>
+          <table class="data-table">
+            <tr>
+              <th>세그먼트</th>
+              <th>🇰🇷 한국</th>
+              <th>🇺🇸 미국</th>
+              <th>비교</th>
+            </tr>
+            <tr>
+              <td>초저가/PB</td>
+              <td>~8,000원 (~$5.5)</td>
+              <td>~$3-6</td>
+              <td>유사</td>
+            </tr>
+            <tr>
+              <td>저가/Mass</td>
+              <td>8,000-15,000원</td>
+              <td>~$6-15</td>
+              <td>유사</td>
+            </tr>
+            <tr>
+              <td><strong>중저가/Masstige</strong></td>
+              <td><strong>15,000-25,000원</strong></td>
+              <td><strong>$15-30</strong></td>
+              <td><span class="pill g">한국 저렴</span></td>
+            </tr>
+            <tr>
+              <td>중고가/Prestige</td>
+              <td>25,000-40,000원</td>
+              <td>$30-60</td>
+              <td><span class="pill g">한국 저렴</span></td>
+            </tr>
+            <tr>
+              <td>프리미엄/Luxury</td>
+              <td>40,000원+</td>
+              <td>$60+</td>
+              <td><span class="pill g">한국 저렴</span></td>
+            </tr>
+          </table>
+          <div class="grid-2 mt-16">
+            <div>
+              <h2 class="slide-subtitle">마진 구조 비교</h2>
+              <table class="data-table">
+                <tr>
+                  <th>항목</th>
+                  <th>한국</th>
+                  <th>미국</th>
+                </tr>
+                <tr>
+                  <td>브랜드 마진</td>
+                  <td>40-60%</td>
+                  <td>Mass 40-50%</td>
+                </tr>
+                <tr>
+                  <td>Prestige 마진</td>
+                  <td>-</td>
+                  <td>60-70%</td>
+                </tr>
+                <tr>
+                  <td>DTC 마진</td>
+                  <td>-</td>
+                  <td>70-80%</td>
+                </tr>
+                <tr>
+                  <td>K-뷰티 수입</td>
+                  <td>-</td>
+                  <td>50-65%</td>
+                </tr>
+              </table>
+            </div>
+            <div
+              style="
+                background: var(--accent-dim);
+                padding: 18px;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              "
+            >
+              <h4
+                style="
+                  font-size: var(--fs-h2);
+                  color: var(--accent);
+                  margin-bottom: 12px;
+                "
+              >
+                핵심 인사이트
+              </h4>
+              <ul style="font-size: var(--fs-sm); list-style: none">
+                <li style="padding: 4px 0">
+                  ✓ 한국 제조→미국 판매 시
+                  <strong class="gold">20-40% 가격 우위</strong>
+                </li>
+                <li style="padding: 4px 0">
+                  ✓ 미국은 <strong>프리미엄화</strong> 진행 → 고마진 기회
+                </li>
+                <li style="padding: 4px 0">
+                  ⚠ 한국은 다이소 채널로 <strong class="red">하방 압력</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">출처: cosinkorea, Evidnt(2025)</p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >동급 품질 대비 20-40% 낮은 가격 — 이 가격-성능 갭이 소비자 전환의
+            핵심 동인</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 14: BARRIERS ============ -->
+      <section class="slide" data-slide="14">
+        <div class="slide-inner">
+          <p class="overline">Entry Barriers & Risk</p>
+          <h1 class="slide-title">진입 장벽 & 리스크 매트릭스</h1>
+          <table class="data-table">
+            <tr>
+              <th>장벽</th>
+              <th>🇰🇷 한국</th>
+              <th>🇺🇸 미국</th>
+            </tr>
+            <tr>
+              <td>규제 인허가</td>
+              <td><span class="pill g">낮음</span> 보고제 15일</td>
+              <td><span class="pill r">높음</span> OTC Drug 6-12개월</td>
+            </tr>
+            <tr>
+              <td>제조 인프라</td>
+              <td><span class="pill g">풍부</span> 한국콜마, 코스맥스</td>
+              <td><span class="pill y">중간</span> FDA GMP 준수</td>
+            </tr>
+            <tr>
+              <td>유통 진입</td>
+              <td><span class="pill r">치열</span> 올리브영 입점 경쟁</td>
+              <td><span class="pill y">채널별 상이</span> Amazon 용이</td>
+            </tr>
+            <tr>
+              <td>브랜드 인지도</td>
+              <td><span class="pill r">높음</span> SNS 바이럴 필수</td>
+              <td><span class="pill r">높음</span> 마케팅 비용</td>
+            </tr>
+            <tr>
+              <td>가격 경쟁</td>
+              <td><span class="pill r">포화</span> 중저가 경쟁</td>
+              <td><span class="pill y">중간</span> Prestige 기회</td>
+            </tr>
+            <tr>
+              <td>소송 리스크</td>
+              <td><span class="pill g">낮음</span></td>
+              <td><span class="pill r">매우 높음</span> 벤젠/SPF 소송</td>
+            </tr>
+            <tr>
+              <td>성분 규제</td>
+              <td><span class="pill g">28종</span> 활용 가능</td>
+              <td><span class="pill r">실질 2종</span> GRASE</td>
+            </tr>
+            <tr>
+              <td>초기 투자</td>
+              <td><span class="pill y">중간</span></td>
+              <td><span class="pill r">높음</span></td>
+            </tr>
+          </table>
+          <div class="grid-2 mt-16">
+            <div
+              style="
+                background: var(--pos-bg);
+                padding: 14px;
+                border-radius: 10px;
+              "
+            >
+              <h4 style="font-size: var(--fs-sm); color: var(--pos)">
+                한국 총 리스크: <strong>낮음-중간</strong>
+              </h4>
+              <p
+                style="
+                  font-size: var(--fs-xs);
+                  color: var(--text2);
+                  margin-top: 4px;
+                "
+              >
+                올리브영 의존, 트렌드 사이클 빠름, 가격 하방 압력
+              </p>
+            </div>
+            <div
+              style="
+                background: var(--neu-bg);
+                padding: 14px;
+                border-radius: 10px;
+              "
+            >
+              <h4 style="font-size: var(--fs-sm); color: var(--neu)">
+                미국 총 리스크: <strong>중간-높음</strong>
+              </h4>
+              <p
+                style="
+                  font-size: var(--fs-xs);
+                  color: var(--text2);
+                  margin-top: 4px;
+                "
+              >
+                FDA 규제, 소송 환경, GRASE 불확실성, 초기 투자 높음
+              </p>
+            </div>
+          </div>
+          <p class="footnote">출처: FDA, Crowell & Moring(2025), 식약처</p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >장벽이 실재하지만 미네랄 기반 포뮬레이션 + PL보험으로 핵심 리스크
+            관리 가능</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 15: M&A ============ -->
+      <section class="slide" data-slide="15">
+        <div class="slide-inner">
+          <p class="overline">M&A & Investment</p>
+          <h1 class="slide-title">M&A & 투자 동향</h1>
+          <h2 class="slide-subtitle">스마트 머니가 선크림에 몰리고 있다</h2>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-year">2021.12</div>
+              <div class="tl-content">
+                <strong class="gold">Blackstone → Supergoop!</strong> 과반 인수
+                (USD 6-7억 밸류에이션)
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2022</div>
+              <div class="tl-content">
+                SC Johnson → <strong>Sun Bum</strong> 인수 (라이프스타일 선케어)
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2023</div>
+              <div class="tl-content">
+                Colgate-Palmolive → <strong>EltaMD</strong> 인수 (더마 선케어)
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2024-25</div>
+              <div class="tl-content">
+                K-뷰티 브랜드 미국 유통 확장 다수, 글로벌 PE K-뷰티 진입 확대
+              </div>
+            </div>
+          </div>
+          <div class="stats mt-12">
+            <div class="stat-box" style="border: 2px solid var(--accent)">
+              <div class="stat-val" style="color: var(--pos)">3.2x</div>
+              <div class="stat-label">한국 뷰티 투자 비중 증가</div>
+              <div class="stat-delta">
+                5.8% → <strong>18.4%</strong> (2024→2025)
+              </div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val">$6-7억</div>
+              <div class="stat-label">SPF 전문 브랜드 밸류</div>
+              <div class="stat-delta">Supergoop! (Blackstone)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val" style="color: var(--pos)">↑</div>
+              <div class="stat-label">인디 브랜드 M&A</div>
+              <div class="stat-delta">엑싯 기회 확대 중</div>
+            </div>
+          </div>
+          <p class="footnote">
+            출처: Blackstone Press Release(2021), 삼정KPMG, THE VC
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >Supergoop! $6-7억 밸류와 한국 뷰티 투자 3배 증가가 시그널 —
+            투자자들이 이미 움직이고 있다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 16: OPPORTUNITIES ============ -->
+      <section class="slide" data-slide="16">
+        <div class="slide-inner">
+          <p class="overline">Strategic Opportunities</p>
+          <h1 class="slide-title">기회 평가</h1>
+          <div class="grid-2">
+            <div>
+              <h2 class="slide-subtitle">🇰🇷 한국 시장 기회</h2>
+              <table class="data-table">
+                <tr>
+                  <th>기회 영역</th>
+                  <th>매력도</th>
+                </tr>
+                <tr>
+                  <td>비건/클린 선크림</td>
+                  <td><span class="stars">★★★★★</span></td>
+                </tr>
+                <tr>
+                  <td>글로벌 D2C (수출)</td>
+                  <td><span class="stars">★★★★★</span></td>
+                </tr>
+                <tr>
+                  <td>선세럼/멀티태스킹</td>
+                  <td><span class="stars">★★★★☆</span></td>
+                </tr>
+                <tr>
+                  <td>혁신 제형 (패치/파우더)</td>
+                  <td><span class="stars">★★★★☆</span></td>
+                </tr>
+                <tr>
+                  <td>남성 전용 선케어</td>
+                  <td><span class="stars">★★★☆☆</span></td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <h2 class="slide-subtitle">🇺🇸 미국 시장 기회</h2>
+              <table class="data-table">
+                <tr>
+                  <th>기회 영역</th>
+                  <th>매력도</th>
+                </tr>
+                <tr>
+                  <td>미네랄 기반 선크림</td>
+                  <td><span class="stars">★★★★★</span></td>
+                </tr>
+                <tr>
+                  <td>틴티드/하이브리드</td>
+                  <td><span class="stars">★★★★★</span></td>
+                </tr>
+                <tr>
+                  <td>K-뷰티 브랜드 진출</td>
+                  <td><span class="stars">★★★★★</span></td>
+                </tr>
+                <tr>
+                  <td>DTC 채널 니치 공략</td>
+                  <td><span class="stars">★★★★☆</span></td>
+                </tr>
+                <tr>
+                  <td>Masstige~Prestige</td>
+                  <td><span class="stars">★★★★☆</span></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div
+            style="
+              background: var(--accent-dim);
+              padding: 16px;
+              border-radius: 10px;
+              border: 1px solid var(--accent-border);
+              margin-top: 16px;
+            "
+          >
+            <h4
+              style="
+                font-size: var(--fs-body);
+                color: var(--accent);
+                margin-bottom: 8px;
+              "
+            >
+              투자 관점 체크포인트
+            </h4>
+            <div class="grid-2" style="font-size: var(--fs-sm)">
+              <ul style="list-style: none">
+                <li>• ODM(한국콜마, 코스맥스) = 인디 성장 직접 수혜</li>
+                <li>• 뷰티 스타트업 투자 비중 18.4% = VC 낙관 시그널</li>
+              </ul>
+              <ul style="list-style: none">
+                <li>• 인디 브랜드 M&A 증가 → 엑싯 기회</li>
+                <li>• 수출 비중 높은 선크림 브랜드에 주목</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">
+            비건/클린 + 미네랄 + 글로벌 D2C가 한·미 양쪽에서 교차하는 Sweet Spot
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >미네랄 + K-뷰티 + DTC의 교차점이 최대 기회 — 한국 제조, 미국 판매
+            모델이 최적</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 17: STRATEGY ============ -->
+      <section class="slide" data-slide="17">
+        <div class="slide-inner">
+          <p class="overline">Recommended Strategy</p>
+          <h1 class="slide-title">권장 진출 전략 — 3가지 시나리오</h1>
+          <div class="roadmap">
+            <div class="phase" style="border-left-color: var(--pos)">
+              <div class="phase-num">시나리오 A</div>
+              <h3>한국 시장 진출</h3>
+              <ul>
+                <li>ODM 활용 비건/클린 선세럼 개발</li>
+                <li>식약처 보고제 (15일/25,000원)</li>
+                <li>네이버+쿠팡 → 올리브영 입점</li>
+                <li>무신사 뷰티 병행</li>
+              </ul>
+            </div>
+            <div class="phase" style="border-left-color: #4a90d9">
+              <div class="phase-num">시나리오 B</div>
+              <h3>미국 시장 직접 진출</h3>
+              <ul>
+                <li>미네랄 기반 포뮬레이션 (GRASE 리스크↓)</li>
+                <li>FDA OTC 라벨링/GMP/시설등록</li>
+                <li>Amazon+DTC → Sephora/Ulta</li>
+                <li>Masstige~Prestige ($15-30/50ml)</li>
+              </ul>
+            </div>
+            <div class="phase" style="border-left-color: var(--accent)">
+              <div class="phase-num">시나리오 C (권장)</div>
+              <h3>한국→미국 크로스보더</h3>
+              <ul>
+                <li>국내 론칭으로 제품력/브랜드 검증</li>
+                <li>올리브영 트랙레코드 확보</li>
+                <li>K-뷰티 프리미엄으로 Amazon US 진입</li>
+                <li>Sephora/Ulta → 유럽/동남아 확장</li>
+              </ul>
+            </div>
+          </div>
+          <h2 class="slide-subtitle mt-16">시나리오 C 로드맵</h2>
+          <div class="roadmap">
+            <div class="phase">
+              <div class="phase-num">Phase 1 (0-6개월)</div>
+              <h3>진입</h3>
+              <ul>
+                <li>제품 개발 (ODM)</li>
+                <li>식약처 보고</li>
+                <li>네이버/쿠팡 론칭</li>
+                <li>SNS/인플루언서 마케팅</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="phase-num">Phase 2 (6-18개월)</div>
+              <h3>확장</h3>
+              <ul>
+                <li>올리브영 입점</li>
+                <li>FDA OTC 등록 준비</li>
+                <li>Amazon US 런칭</li>
+                <li>D2C 웹사이트 구축</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="phase-num">Phase 3 (18-36개월)</div>
+              <h3>지배</h3>
+              <ul>
+                <li>Sephora/Ulta 입점</li>
+                <li>유럽/동남아 확장</li>
+                <li>브랜드 M&A 기회 탐색</li>
+                <li>카테고리 리더십 구축</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >시나리오 C (한국→미국 크로스보더)가 리스크 최소화 + 기회 극대화의
+            최적 경로</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 18: RISK & MITIGATION ============ -->
+      <section class="slide" data-slide="18">
+        <div class="slide-inner">
+          <p class="overline">Risk Assessment</p>
+          <h1 class="slide-title">리스크 요약 & 대응 전략</h1>
+          <table class="data-table">
+            <tr>
+              <th>리스크</th>
+              <th>발생가능성</th>
+              <th>영향도</th>
+              <th>대응 전략</th>
+            </tr>
+            <tr>
+              <td>FDA 규제 변경</td>
+              <td><span class="pill y">중간</span></td>
+              <td><span class="pill r">높음</span></td>
+              <td>미네랄(ZnO/TiO2) 기반 → GRASE 리스크 회피</td>
+            </tr>
+            <tr>
+              <td>소송 (벤젠/SPF)</td>
+              <td><span class="pill r">높음</span></td>
+              <td><span class="pill r">높음</span></td>
+              <td>PL보험 + 제3자 독립 테스트 + 엄격한 QC</td>
+            </tr>
+            <tr>
+              <td>경쟁 심화</td>
+              <td><span class="pill r">높음</span></td>
+              <td><span class="pill y">중간</span></td>
+              <td>차별화 포지셔닝 (니치 타겟팅)</td>
+            </tr>
+            <tr>
+              <td>원료 가격 변동</td>
+              <td><span class="pill y">중간</span></td>
+              <td><span class="pill y">중간</span></td>
+              <td>복수 공급처 확보</td>
+            </tr>
+            <tr>
+              <td>환율 변동</td>
+              <td><span class="pill y">중간</span></td>
+              <td><span class="pill y">중간</span></td>
+              <td>현지 생산 또는 헤징</td>
+            </tr>
+            <tr>
+              <td>올리브영 의존</td>
+              <td><span class="pill r">높음</span></td>
+              <td><span class="pill y">중간</span></td>
+              <td>다채널 전략 (쿠팡/네이버/무신사 병행)</td>
+            </tr>
+            <tr>
+              <td>트렌드 사이클</td>
+              <td><span class="pill r">높음</span></td>
+              <td><span class="pill y">중간</span></td>
+              <td>빠른 신제품 출시 + ODM 파트너십</td>
+            </tr>
+          </table>
+          <div
+            style="
+              background: var(--accent-dim);
+              padding: 18px;
+              border-radius: 10px;
+              margin-top: 16px;
+              border: 1px solid var(--accent-border);
+            "
+          >
+            <h4
+              style="
+                font-size: var(--fs-body);
+                color: var(--accent);
+                margin-bottom: 10px;
+              "
+            >
+              Call to Action — 지금은 골든 윈도우
+            </h4>
+            <div class="grid-3" style="font-size: var(--fs-sm)">
+              <div style="text-align: center">
+                <div style="font-size: var(--fs-hero); color: var(--accent)">
+                  1
+                </div>
+                <p>
+                  규제 비대칭 + K-뷰티 모멘텀 + 소비자 전환이<br /><strong
+                    >동시에 작동하는 창</strong
+                  >
+                </p>
+              </div>
+              <div style="text-align: center">
+                <div style="font-size: var(--fs-hero); color: var(--accent)">
+                  2
+                </div>
+                <p>
+                  이 창은 후발 진입자 증가로<br /><strong
+                    >2-3년 내 좁아질 것</strong
+                  >
+                </p>
+              </div>
+              <div style="text-align: center">
+                <div style="font-size: var(--fs-hero); color: var(--accent)">
+                  3
+                </div>
+                <p>시나리오 C 기반<br /><strong>즉시 실행 착수 권고</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >리스크는 인지하고 대비 — 지금 행동하지 않으면 2-3년 후 이 기회의
+            창은 닫힌다</span
+          >
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 19: APPENDIX ============ -->
+      <section class="slide" data-slide="19">
+        <div class="slide-inner">
+          <p class="overline">Appendix</p>
+          <h1 class="slide-title">출처 및 참고 자료</h1>
+          <div class="grid-2">
+            <div>
+              <h2 class="slide-subtitle">시장 규모 / 성장률</h2>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text2);
+                "
+              >
+                <li style="padding: 3px 0">
+                  • Grand View Research (2024) — U.S. Sun Care Market
+                </li>
+                <li style="padding: 3px 0">
+                  • Verified Market Research (2024) — Sunscreen Market
+                </li>
+                <li style="padding: 3px 0">
+                  • Spherical Insights (2024) — S.Korea Sun Care
+                </li>
+                <li style="padding: 3px 0">
+                  • Deep Market Insights — Korea Sun Care 2025-2033
+                </li>
+                <li style="padding: 3px 0">
+                  • Statista (2024) — Sun Protection US Forecast
+                </li>
+              </ul>
+              <h2 class="slide-subtitle mt-12">규제 / 법률</h2>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text2);
+                "
+              >
+                <li style="padding: 3px 0">
+                  • FDA Federal Register OTC000039 (2025.12)
+                </li>
+                <li style="padding: 3px 0">
+                  • Holland & Knight — FDA Sunscreen (2025.12)
+                </li>
+                <li style="padding: 3px 0">
+                  • EWG — Sunscreen Regulation (2025.06)
+                </li>
+                <li style="padding: 3px 0">
+                  • 식약처 — 기능성화장품 심사 규정
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 class="slide-subtitle">소비자 / 경쟁</h2>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text2);
+                "
+              >
+                <li style="padding: 3px 0">
+                  • CivicScience — Sunscreen Usage 2025
+                </li>
+                <li style="padding: 3px 0">
+                  • Evidnt — Sunscreen Category Trends 2025
+                </li>
+                <li style="padding: 3px 0">
+                  • Awisee — K-Beauty Market US 2025
+                </li>
+                <li style="padding: 3px 0">
+                  • 삼정KPMG — K-뷰티의 글로벌 부상
+                </li>
+                <li style="padding: 3px 0">
+                  • THE VC — K-뷰티 스타트업 데이터
+                </li>
+              </ul>
+              <h2 class="slide-subtitle mt-12">유통 / 소송</h2>
+              <ul
+                style="
+                  font-size: var(--fs-xs);
+                  list-style: none;
+                  color: var(--text2);
+                "
+              >
+                <li style="padding: 3px 0">• CJ올리브영 IR (2025 실적)</li>
+                <li style="padding: 3px 0">
+                  • Front Row Group — US Beauty Online (2024)
+                </li>
+                <li style="padding: 3px 0">
+                  • Valisure — Benzene Testing Report (2021)
+                </li>
+                <li style="padding: 3px 0">
+                  • Crowell & Moring — Sunscreen Litigation (2025)
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote mt-16" style="text-align: center">
+            본 보고서는 2026년 3월 25일 기준 공개 자료를 기반으로
+            작성되었습니다.<br />유료 리서치(Euromonitor, Mintel 등) 상세
+            데이터는 미포함. 투자 의사결정 시 추가 검증을 권장합니다.
+          </p>
+        </div>
+        <div class="takeaway">
+          <span class="takeaway-icon">▸</span
+          ><span class="takeaway-text"
+            >상세 시장별 리서치: 한국_자외선차단제_시장_리서치_2025.md /
+            US_Sunscreen_Market_Research_2025.md</span
+          >
+        </div>
+      </section>
+    </div>
+    <!-- /slide-viewport -->
+
+    <div id="slide-number"></div>
+    <div id="nav-buttons">
+      <button id="btn-prev">←</button><button id="btn-next">→</button>
+    </div>
+    <div id="slide-dots"></div>
+    <button id="btn-save" title="이미지 저장">📥</button>
+    <div id="save-modal" hidden>
+      <div id="save-modal-inner">
+        <h3>슬라이드 저장 방법</h3>
+        <table>
+          <tr>
+            <th>방법</th>
+            <th>설명</th>
+          </tr>
+          <tr>
+            <td>PDF 저장</td>
+            <td>브라우저 인쇄(Ctrl+P) → "PDF로 저장" 선택</td>
+          </tr>
+          <tr>
+            <td>PNG 변환</td>
+            <td>PDF 저장 후 ilovepdf.com에서 PNG 추출</td>
+          </tr>
+          <tr>
+            <td>현재 슬라이드</td>
+            <td>HTML 파일을 브라우저에서 열고 스크린샷 (Win+Shift+S)</td>
+          </tr>
+        </table>
+        <p style="margin-top: 12px; font-size: 0.85em; opacity: 0.7">
+          가장 빠른 공유: PDF 저장 후 카카오톡에 파일 전송
+        </p>
+        <button id="save-modal-close">닫기</button>
+      </div>
+    </div>
+
+    <script>
+      class Presentation {
+        constructor() {
+          this.slides = Array.from(document.querySelectorAll(".slide"));
+          this.total = this.slides.length;
+          this.current = 0;
+          this.transitioning = false;
+          this.DURATION = 480;
+          this._buildDots();
+          this._loadFromHash();
+          this._setupKeyboard();
+          this._setupTouch();
+          this._setupButtons();
+          this._setupFullscreen();
+          this._setupSaveModal();
+          this._update(true);
+        }
+        goTo(index, instant = false) {
+          if (
+            this.transitioning ||
+            index < 0 ||
+            index >= this.total ||
+            index === this.current
+          )
+            return;
+          this.transitioning = true;
+          const prev = this.current;
+          const dir = index > prev ? "left" : "right";
+          this.slides[prev].classList.remove("active");
+          this.slides[prev].classList.add(
+            dir === "left" ? "leaving-left" : "leaving-right",
+          );
+          this.slides[index].classList.remove("leaving-left", "leaving-right");
+          this.slides[index].style.transform =
+            dir === "left" ? "translateX(52px)" : "translateX(-52px)";
+          this.slides[index].style.opacity = "0";
+          void this.slides[index].offsetWidth;
+          this.slides[index].classList.add("active");
+          this.slides[index].style.transform = "";
+          this.slides[index].style.opacity = "";
+          this.current = index;
+          this._updateUI();
+          setTimeout(
+            () => {
+              this.slides[prev].classList.remove(
+                "leaving-left",
+                "leaving-right",
+              );
+              this.transitioning = false;
+            },
+            instant ? 0 : this.DURATION,
+          );
+        }
+        next() {
+          this.goTo(this.current + 1);
+        }
+        prev() {
+          this.goTo(this.current - 1);
+        }
+        _update(instant) {
+          this.slides.forEach((s, i) => {
+            s.classList.remove("active", "leaving-left", "leaving-right");
+            if (i === this.current) s.classList.add("active");
+          });
+          this._updateUI();
+        }
+        _updateUI() {
+          const pct = ((this.current + 1) / this.total) * 100;
+          document.getElementById("progress-bar").style.width = pct + "%";
+          document.getElementById("slide-number").textContent =
+            String(this.current + 1).padStart(2, "0") +
+            " / " +
+            String(this.total).padStart(2, "0");
+          location.hash = "slide-" + (this.current + 1);
+          this.dots.forEach((d, i) =>
+            d.classList.toggle("active", i === this.current),
+          );
+        }
+        _buildDots() {
+          const c = document.getElementById("slide-dots");
+          this.dots = [];
+          for (let i = 0; i < this.total; i++) {
+            const d = document.createElement("div");
+            d.className = "dot";
+            d.addEventListener("click", () => this.goTo(i));
+            c.appendChild(d);
+            this.dots.push(d);
+          }
+        }
+        _loadFromHash() {
+          const m = location.hash.match(/slide-(\d+)/);
+          if (m) {
+            const n = parseInt(m[1]) - 1;
+            if (n >= 0 && n < this.total) this.current = n;
+          }
+        }
+        _setupKeyboard() {
+          document.addEventListener("keydown", (e) => {
+            if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+            switch (e.key) {
+              case "ArrowRight":
+              case " ":
+                e.preventDefault();
+                this.next();
+                break;
+              case "ArrowLeft":
+                e.preventDefault();
+                this.prev();
+                break;
+              case "f":
+              case "F":
+                this._toggleFullscreen();
+                break;
+              case "Home":
+                e.preventDefault();
+                this.goTo(0);
+                break;
+              case "End":
+                e.preventDefault();
+                this.goTo(this.total - 1);
+                break;
+            }
+          });
+        }
+        _toggleFullscreen() {
+          if (!document.fullscreenElement)
+            document.documentElement.requestFullscreen?.();
+          else document.exitFullscreen?.();
+        }
+        _setupTouch() {
+          const el = document.getElementById("slide-viewport");
+          let sx = 0;
+          el.addEventListener("pointerdown", (e) => {
+            sx = e.clientX;
+          });
+          el.addEventListener("pointerup", (e) => {
+            const d = sx - e.clientX;
+            if (Math.abs(d) < 50) return;
+            d > 0 ? this.next() : this.prev();
+          });
+        }
+        _setupButtons() {
+          document
+            .getElementById("btn-prev")
+            .addEventListener("click", () => this.prev());
+          document
+            .getElementById("btn-next")
+            .addEventListener("click", () => this.next());
+        }
+        _setupFullscreen() {
+          document.addEventListener("fullscreenchange", () => {});
+        }
+        _setupSaveModal() {
+          const btn = document.getElementById("btn-save");
+          const modal = document.getElementById("save-modal");
+          const close = document.getElementById("save-modal-close");
+          btn.addEventListener("click", () => {
+            modal.hidden = false;
+          });
+          close.addEventListener("click", () => {
+            modal.hidden = true;
+          });
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.hidden = true;
+          });
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") modal.hidden = true;
+          });
+        }
+      }
+      document.addEventListener("DOMContentLoaded", () => new Presentation());
+    </script>
+  </body>
+</html>
