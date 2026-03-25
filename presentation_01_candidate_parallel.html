@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate 병렬 조회 성능 개선 — Room Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0d1117;
+      --surface:    #161b22;
+      --surface2:   #21262d;
+      --accent:     #58a6ff;
+      --accent2:    #3fb950;
+      --accent3:    #f78166;
+      --text:       #e6edf3;
+      --text-muted: #7d8590;
+      --border:     rgba(88, 166, 255, 0.15);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.4s ease;
+      z-index: 100;
+    }
+
+    /* ── Viewport ── */
+    #slide-viewport {
+      position: fixed; inset: 0;
+      overflow: hidden;
+    }
+
+    /* ── Slide base ── */
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transform: translateX(52px);
+      transition: opacity 0.46s ease, transform 0.46s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide.active {
+      opacity: 1; transform: translateX(0);
+      pointer-events: auto; z-index: 10;
+    }
+    .slide.leaving-left  { opacity: 0; transform: translateX(-52px); pointer-events: none; z-index: 5; }
+    .slide.leaving-right { opacity: 0; transform: translateX(52px);  pointer-events: none; z-index: 5; }
+
+    .slide-inner {
+      width: 100%; max-width: 860px;
+      padding: 2rem 2.5rem;
+    }
+
+    /* ── Slide number ── */
+    #slide-number {
+      position: fixed; bottom: 1.5rem; right: 1.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      z-index: 50;
+    }
+
+    /* ── Nav buttons ── */
+    #nav-buttons {
+      position: fixed; bottom: 1.25rem; right: 5rem;
+      display: flex; gap: 0.5rem;
+      z-index: 50;
+    }
+    #nav-buttons button {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 2rem; height: 2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    #nav-buttons button:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Dot navigator ── */
+    #slide-dots {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 0.5rem;
+      z-index: 50;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--text-muted);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active { background: var(--accent); border-color: var(--accent); width: 18px; border-radius: 3px; }
+
+    /* ══════════════════════════════
+       SLIDE SPECIFIC STYLES
+    ══════════════════════════════ */
+
+    /* ── SLIDE 1: Title ── */
+    .slide-title {
+      background: radial-gradient(ellipse at 30% 50%, rgba(88,166,255,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 50%, rgba(63,185,80,0.05) 0%, transparent 60%),
+                  var(--bg);
+    }
+    .slide-title .slide-inner { text-align: center; }
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      background: rgba(88,166,255,0.12);
+      border: 1px solid rgba(88,166,255,0.3);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .title-main {
+      font-size: clamp(2rem, 4vw + 1rem, 3.25rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+    .title-main .hl { color: var(--accent); }
+    .title-sub {
+      font-size: clamp(0.9rem, 1.5vw + 0.3rem, 1.1rem);
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+    }
+    .title-stat-row {
+      display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 3rem;
+    }
+    .title-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1.5rem;
+      text-align: center;
+    }
+    .title-stat .val {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 900;
+      color: var(--accent2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .title-stat .lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .title-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .title-meta span { color: var(--text); }
+
+    /* ── SLIDE 2: Problem ── */
+    .slide-problem { background: var(--bg); }
+    .slide-h { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; margin-bottom: 0.4rem; }
+    .slide-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.75rem; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+    }
+    .card-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+    }
+    .code-ascii {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+    .code-ascii .hl  { color: var(--accent3); }
+    .code-ascii .ok  { color: var(--accent); }
+    .problem-list { list-style: none; }
+    .problem-list li {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      font-size: 0.9rem; margin-bottom: 0.85rem; line-height: 1.5;
+    }
+    .problem-list li .icon {
+      font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem;
+    }
+    .impact-box {
+      margin-top: 1.25rem;
+      background: rgba(247,129,102,0.08);
+      border: 1px solid rgba(247,129,102,0.25);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.88rem;
+    }
+    .impact-box .impact-label { font-size: 0.72rem; color: var(--accent3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+
+    /* ── SLIDE 3: Direction ── */
+    .direction-list { list-style: none; }
+    .direction-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+      transition: border-color 0.2s;
+    }
+    .direction-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .direction-content .dir-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
+    .direction-content .dir-effect { font-size: 0.85rem; color: var(--accent2); }
+
+    /* ── SLIDE 4: Implementation ── */
+    .impl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .impl-card {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      overflow: hidden;
+    }
+    .impl-card.before { border: 1px solid rgba(247,129,102,0.3); }
+    .impl-card.after  { border: 1px solid rgba(63,185,80,0.3); }
+    .impl-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 0.75rem; font-weight: 700;
+    }
+    .impl-card.before .impl-label { color: var(--accent3); }
+    .impl-card.after  .impl-label { color: var(--accent2); }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; line-height: 1.75;
+      color: var(--text-muted);
+      white-space: pre;
+    }
+    .mono .kw  { color: var(--accent); }
+    .mono .fn  { color: #d2a8ff; }
+    .mono .str { color: var(--accent2); }
+    .mono .cm  { color: #484f58; }
+    .principle-box {
+      background: rgba(88,166,255,0.06);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .principle-box .pi { color: var(--accent); font-weight: 700; }
+
+    /* ── SLIDE 5: Results ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+    .stat-box .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--accent2);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-box .stat-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .result-table th {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.6rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .result-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+    .result-table td .good { color: var(--accent2); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .check { color: var(--accent2); }
+
+    /* ── SLIDE 6: Outro ── */
+    .slide-outro {
+      background: radial-gradient(ellipse at 50% 60%, rgba(63,185,80,0.07) 0%, transparent 65%), var(--bg);
+      text-align: center;
+    }
+    .outro-quote {
+      font-size: clamp(1.3rem, 2.5vw + 0.5rem, 2rem);
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text);
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+    }
+    .outro-quote .hl { color: var(--accent); }
+    .comparison-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.25rem; margin-bottom: 0.85rem;
+    }
+    .cmp-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 1.4rem;
+      font-size: 0.9rem;
+    }
+    .cmp-item.before { border-color: rgba(247,129,102,0.3); color: var(--text-muted); }
+    .cmp-item.after  { border-color: rgba(63,185,80,0.3); color: var(--accent2); font-weight: 700; }
+    .cmp-arrow { color: var(--text-muted); font-size: 1.2rem; }
+    .outro-summary {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .outro-summary strong { color: var(--accent); font-style: normal; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="slide-viewport">
+
+  <!-- SLIDE 1: 표지 -->
+  <section class="slide slide-title" data-slide="1">
+    <div class="slide-inner">
+      <div class="badge">Room Audit — Performance</div>
+      <h1 class="title-main">
+        Candidate <span class="hl">병렬 조회</span><br>성능 개선
+      </h1>
+      <p class="title-sub">Top500 Candidate Fetch Parallelization · Mapping Hub</p>
+      <div class="title-stat-row">
+        <div class="title-stat">
+          <div class="val">~3×</div>
+          <div class="lbl">처리 속도 향상</div>
+        </div>
+        <div class="title-stat">
+          <div class="val">20s</div>
+          <div class="lbl" style="color:var(--accent3)">→ 약 7초</div>
+        </div>
+        <div class="title-stat">
+          <div class="val">32</div>
+          <div class="lbl">테스트 통과 (회귀 없음)</div>
+        </div>
+      </div>
+      <p class="title-meta">2026-03-22 &nbsp;·&nbsp; 개발: <span>David Hyun</span></p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: 문제 정의 -->
+  <section class="slide slide-problem" data-slide="2">
+    <div class="slide-inner">
+      <h2 class="slide-h">룸 100개 감사에 왜 20초가 걸렸나</h2>
+      <p class="slide-sub">순차 호출 구조에서 I/O 대기 시간은 곧 낭비된 벽시계 시간이다.</p>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">순차 실행 구조</div>
+          <div class="code-ascii">
+<span class="hl">룸 1</span>  ──[fetch]──▶ 200ms 대기
+<span class="hl">룸 2</span>  ──[fetch]──▶ 200ms 대기
+<span class="hl">룸 3</span>  ──[fetch]──▶ 200ms 대기
+  ⋮
+<span class="hl">룸 N</span>  ──[fetch]──▶ 200ms 대기
+
+<span class="ok">총 대기 = N × 200ms</span>
+          </div>
+          <div class="impact-box">
+            <div class="impact-label">실측 낭비</div>
+            룸 100개 → <strong>약 20초</strong> 순수 대기
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">원인 분석</div>
+          <ul class="problem-list">
+            <li>
+              <span class="icon">①</span>
+              <span><strong>preMappingList</strong> 순회 시<br>getRoomMappingCandidates를 1건씩 호출</span>
+            </li>
+            <li>
+              <span class="icon">②</span>
+              <span>각 API 호출마다 <strong>~200ms 네트워크 대기</strong> 발생</span>
+            </li>
+            <li>
+              <span class="icon">③</span>
+              <span>병렬 처리 없이 <strong>N개 룸 × 200ms</strong> 순차 누적</span>
+            </li>
+          </ul>
+          <div class="impact-box" style="background:rgba(63,185,80,0.06); border-color:rgba(63,185,80,0.2); margin-top: 0.75rem;">
+            <div class="impact-label" style="color:var(--accent2)">핵심 통찰</div>
+            I/O 대기 중 CPU는 놀고 있다.<br>그 시간에 다음 요청을 보내면 된다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: 개선 방향 -->
+  <section class="slide" data-slide="3">
+    <div class="slide-inner">
+      <h2 class="slide-h">3가지 개선 전략</h2>
+      <p class="slide-sub">동시성 제한(concurrentMap)으로 안전하게 3배를 만든다.</p>
+      <ul class="direction-list">
+        <li class="direction-item">
+          <span class="direction-num">01</span>
+          <div class="direction-content">
+            <div class="dir-title">동시 3개 병렬 처리 (concurrentMap)</div>
+            <div class="dir-effect">→ 처리량 ~3배 향상 · Rate Limit 안전한 동시성</div>
+          </div>
+        </li>
+        <li class="direction-item">
+          <span class="direction-num">02</span>
+          <div class="direction-content">
+            <div class="dir-title">concurrentMap 유틸 분리 (auditCandidateFetcher.ts)</div>
+            <div class="dir-effect">→ 재사용 가능한 동시성 제어 모듈 — Trip.com API 기준값 확립</div>
+          </div>
+        </li>
+        <li class="direction-item">
+          <span class="direction-num">03</span>
+          <div class="direction-content">
+            <div class="dir-title">TDD 기반 구현</div>
+            <div class="dir-effect">→ 회귀 없이 10개 신규 테스트 추가 (22 → 32개)</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: 구현 -->
+  <section class="slide" data-slide="4">
+    <div class="slide-inner">
+      <h2 class="slide-h" style="font-size:clamp(1.2rem,2.5vw,1.6rem);">concurrentMap(list, 3, fetchFn) — Before / After</h2>
+      <p class="slide-sub">for 루프 한 줄이 concurrentMap 한 줄로 교체됐다.</p>
+      <div class="impl-grid">
+        <div class="impl-card before">
+          <div class="impl-label">Before — 순차</div>
+          <div class="mono"><span class="kw">for</span> (<span class="kw">const</span> room <span class="kw">of</span> preMappingList) {
+  <span class="cm">// 1건씩 순차 호출</span>
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">getCandidate</span>(room);
+  results.<span class="fn">push</span>(res);
+  <span class="cm">// 룸A → 룸B → 룸C ...</span>
+}</div>
+        </div>
+        <div class="impl-card after">
+          <div class="impl-label">After — 병렬 3개</div>
+          <div class="mono"><span class="kw">const</span> results = <span class="kw">await</span>
+  <span class="fn">concurrentMap</span>(
+    preMappingList,
+    <span class="str">3</span>,        <span class="cm">// 동시 최대 3개</span>
+    <span class="fn">getCandidate</span>
+  );
+<span class="cm">// 룸A, 룸B, 룸C 동시 처리</span></div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-bottom:1rem;">
+        <div class="card" style="padding:0.9rem 1.1rem;">
+          <div class="card-title">Before — 순차 흐름</div>
+          <div class="code-ascii" style="font-size:0.78rem;">
+룸A ──200ms──▶
+              룸B ──200ms──▶
+                            룸C ──200ms──▶
+<span style="color:var(--accent3)">총 = 3 × 200ms = 600ms</span>
+          </div>
+        </div>
+        <div class="card" style="padding:0.9rem 1.1rem;">
+          <div class="card-title">After — 병렬 흐름</div>
+          <div class="code-ascii" style="font-size:0.78rem;">
+룸A ──200ms──▶
+룸B ──200ms──▶  <span style="color:var(--accent2)">(동시)</span>
+룸C ──200ms──▶
+<span style="color:var(--accent2)">총 = ceil(3/3) × 200ms = 200ms</span>
+          </div>
+        </div>
+      </div>
+      <div class="principle-box">
+        <span class="pi">원리:</span> JS 이벤트 루프 + Promise 병렬 실행 — 동시 N개를 초과하지 않으면서 큐를 순차 소비
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: 결과 -->
+  <section class="slide" data-slide="5">
+    <div class="slide-inner">
+      <h2 class="slide-h">수치가 구조의 선택이 옳았음을 증명한다</h2>
+      <p class="slide-sub">속도만이 아니라 안정성과 품질도 함께 개선됐다.</p>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-val">~3×</span>
+          <div class="stat-desc">처리 속도 향상<br>(룸 N개 기준)</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color:var(--accent)">0</span>
+          <div class="stat-desc">429 Rate Limit<br>오류 발생</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color:#d2a8ff">+10</span>
+          <div class="stat-desc">신규 테스트<br>22 → 32개</div>
+        </div>
+      </div>
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>개선 항목</th>
+            <th>효과</th>
+            <th>실측</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>순차 → 병렬 3개 처리</td>
+            <td><span class="good">~3배</span> 처리 속도 향상</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Rate Limit 안전성</td>
+            <td>429 오류 발생 없음</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>테스트 커버리지</td>
+            <td>22개 → <span class="good">32개</span> (회귀 없음)</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:1rem; font-size:0.8rem; color:var(--text-muted);">
+        변경 파일: <code style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">concurrentMap.ts</code> · <code style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">auditCandidateFetcher.ts</code> · <code style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.78rem;">auditManager.ts</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: 마무리 -->
+  <section class="slide slide-outro" data-slide="6">
+    <div class="slide-inner">
+      <p class="outro-quote">
+        "I/O 대기는 <span class="hl">CPU가 쉬는 시간</span>이다<br>— 그 틈에 다음 요청을 보내라"
+      </p>
+      <div class="comparison-row">
+        <div class="cmp-item before">N × 200ms 순차 대기</div>
+        <span class="cmp-arrow">→</span>
+        <div class="cmp-item after">ceil(N/3) × 200ms 병렬</div>
+      </div>
+      <div class="comparison-row">
+        <div class="cmp-item before">루프 안에 fetch 직접 호출</div>
+        <span class="cmp-arrow">→</span>
+        <div class="cmp-item after">concurrentMap 유틸 분리</div>
+      </div>
+      <p class="outro-summary">
+        Trip.com API 병렬 기준값 <strong>3</strong> 확립 — 이후 모든 병렬화의 기준이 됨
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<div id="slide-number"></div>
+<div id="nav-buttons">
+  <button id="btn-prev">←</button>
+  <button id="btn-next">→</button>
+</div>
+<div id="slide-dots"></div>
+
+<script>
+class Presentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.transitioning = false;
+    this.DURATION = 480;
+    this._buildDots();
+    this._loadFromHash();
+    this._setupKeyboard();
+    this._setupTouch();
+    this._setupButtons();
+    this._setupFullscreen();
+    this._update();
+  }
+
+  _buildDots() {
+    const c = document.getElementById('slide-dots');
+    this.slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', `슬라이드 ${i+1}`);
+      d.addEventListener('click', () => this.goTo(i));
+      c.appendChild(d);
+    });
+    this.dots = Array.from(c.querySelectorAll('.dot'));
+  }
+
+  _loadFromHash() {
+    const m = location.hash.match(/slide-(\d+)/);
+    if (m) { const n = parseInt(m[1]) - 1; if (n >= 0 && n < this.total) { this.current = n; } }
+  }
+
+  _update(instant) {
+    const prog = document.getElementById('progress-bar');
+    const num  = document.getElementById('slide-number');
+    prog.style.width = `${((this.current + 1) / this.total) * 100}%`;
+    num.textContent = `${String(this.current + 1).padStart(2,'0')} / ${String(this.total).padStart(2,'0')}`;
+    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
+    location.hash = `slide-${this.current + 1}`;
+  }
+
+  goTo(index, instant) {
+    if (this.transitioning) return;
+    if (index < 0 || index >= this.total) return;
+    const prev = this.current;
+    if (prev === index) return;
+
+    this.transitioning = true;
+    const dir = index > prev ? 'left' : 'right';
+    const old = this.slides[prev];
+    const next = this.slides[index];
+
+    old.classList.remove('active');
+    old.classList.add(`leaving-${dir}`);
+    next.classList.remove('leaving-left', 'leaving-right');
+    next.style.transform = dir === 'left' ? 'translateX(52px)' : 'translateX(-52px)';
+    next.style.opacity = '0';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        next.style.transform = '';
+        next.style.opacity = '';
+        next.classList.add('active');
+      });
+    });
+
+    this.current = index;
+    this._update();
+
+    setTimeout(() => {
+      old.classList.remove(`leaving-${dir}`);
+      this.transitioning = false;
+    }, this.DURATION);
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  _setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+      switch(e.key) {
+        case 'ArrowRight': case ' ': e.preventDefault(); this.next(); break;
+        case 'ArrowLeft': e.preventDefault(); this.prev(); break;
+        case 'f': case 'F': this._toggleFullscreen(); break;
+        case 'Home': e.preventDefault(); this.goTo(0); break;
+        case 'End': e.preventDefault(); this.goTo(this.total - 1); break;
+      }
+    });
+  }
+
+  _toggleFullscreen() {
+    if (!document.fullscreenElement) { document.documentElement.requestFullscreen?.(); }
+    else { document.exitFullscreen?.(); }
+  }
+
+  _setupTouch() {
+    const el = document.getElementById('slide-viewport');
+    let startX = 0;
+    el.addEventListener('pointerdown', e => { startX = e.clientX; });
+    el.addEventListener('pointerup', e => {
+      const delta = startX - e.clientX;
+      if (Math.abs(delta) < 50) return;
+      delta > 0 ? this.next() : this.prev();
+    });
+  }
+
+  _setupButtons() {
+    document.getElementById('btn-prev').addEventListener('click', () => this.prev());
+    document.getElementById('btn-next').addEventListener('click', () => this.next());
+  }
+
+  _setupFullscreen() {
+    document.addEventListener('fullscreenchange', () => {
+      const btn = document.querySelector('#nav-buttons button');
+    });
+  }
+}
+
+// Init first slide
+const slides = document.querySelectorAll('.slide');
+slides[0].classList.add('active');
+const pres = new Presentation();
+</script>
+</body>
+</html>

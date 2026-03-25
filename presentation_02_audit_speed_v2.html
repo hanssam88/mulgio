@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>감사 속도 최대화 v2 — Room Audit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0a0e1a;
+      --surface:    #131929;
+      --surface2:   #1c2336;
+      --accent:     #00d4ff;
+      --accent2:    #ff6b35;
+      --accent3:    #a8ff78;
+      --text:       #e8edf5;
+      --text-muted: #6b7a99;
+      --border:     rgba(0, 212, 255, 0.15);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.4s ease;
+      z-index: 100;
+    }
+
+    /* ── Viewport ── */
+    #slide-viewport { position: fixed; inset: 0; overflow: hidden; }
+
+    /* ── Slide base ── */
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transform: translateX(52px);
+      transition: opacity 0.46s ease, transform 0.46s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; z-index: 10; }
+    .slide.leaving-left  { opacity: 0; transform: translateX(-52px); pointer-events: none; z-index: 5; }
+    .slide.leaving-right { opacity: 0; transform: translateX(52px);  pointer-events: none; z-index: 5; }
+
+    .slide-inner { width: 100%; max-width: 900px; padding: 1.75rem 2.5rem; }
+
+    /* ── UI chrome ── */
+    #slide-number {
+      position: fixed; bottom: 1.5rem; right: 1.75rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: var(--text-muted); z-index: 50;
+    }
+    #nav-buttons {
+      position: fixed; bottom: 1.25rem; right: 5rem;
+      display: flex; gap: 0.5rem; z-index: 50;
+    }
+    #nav-buttons button {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); width: 2rem; height: 2rem;
+      border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    #nav-buttons button:hover { color: var(--text); border-color: var(--accent); }
+    #slide-dots {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 50;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--text-muted);
+      cursor: pointer; transition: all 0.3s;
+    }
+    .dot.active { background: var(--accent); border-color: var(--accent); width: 18px; border-radius: 3px; }
+
+    /* ══════════════════════════════════
+       SLIDE STYLES
+    ══════════════════════════════════ */
+
+    /* Common */
+    .slide-h {
+      font-size: clamp(1.4rem, 2.8vw + 0.5rem, 2rem);
+      font-weight: 700; margin-bottom: 0.35rem; line-height: 1.25;
+    }
+    .slide-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .tag {
+      display: inline-block; padding: 0.2rem 0.7rem;
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 4px; font-size: 0.72rem; color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 0.6rem;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1.4rem;
+    }
+    .card-title {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); margin-bottom: 0.75rem;
+    }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; line-height: 1.75;
+      color: var(--text-muted); white-space: pre;
+    }
+    .mono .kw  { color: var(--accent); }
+    .mono .fn  { color: #d2a8ff; }
+    .mono .str { color: var(--accent3); }
+    .mono .num { color: var(--accent2); }
+    .mono .cm  { color: #3d4a6b; }
+
+    /* ── SLIDE 1: Title ── */
+    .slide-title {
+      background: radial-gradient(ellipse at 25% 50%, rgba(0,212,255,0.09) 0%, transparent 55%),
+                  radial-gradient(ellipse at 75% 50%, rgba(255,107,53,0.06) 0%, transparent 55%),
+                  var(--bg);
+      text-align: center;
+    }
+    .badge {
+      display: inline-block; padding: 0.3rem 0.9rem;
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.28);
+      border-radius: 999px; font-size: 0.75rem; color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.4rem;
+    }
+    .title-main {
+      font-size: clamp(2rem, 4.5vw + 0.5rem, 3.5rem);
+      font-weight: 900; line-height: 1.12; letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+    }
+    .title-main .accent { color: var(--accent); }
+    .title-main .accent2 { color: var(--accent2); }
+    .title-sub-text { font-size: clamp(0.85rem, 1.2vw + 0.3rem, 1rem); color: var(--text-muted); margin-bottom: 2.25rem; }
+    .title-pillars {
+      display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .pillar {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 1.1rem;
+      font-size: 0.82rem; color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .title-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .title-meta span { color: var(--text); }
+
+    /* ── SLIDE 2: Problem ── */
+    .problem-numbers {
+      display: flex; gap: 1rem; margin-bottom: 1rem;
+    }
+    .waste-box {
+      flex: 1; background: var(--surface);
+      border: 1px solid rgba(255,107,53,0.3);
+      border-radius: 10px; padding: 1rem 1.2rem; text-align: center;
+    }
+    .waste-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 900;
+      color: var(--accent2); display: block;
+    }
+    .waste-lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .cause-list { list-style: none; }
+    .cause-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      font-size: 0.875rem; margin-bottom: 0.7rem; line-height: 1.5;
+    }
+    .cause-num {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2); font-weight: 700; flex-shrink: 0;
+    }
+
+    /* ── SLIDE 3: Direction ── */
+    .roadmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 1rem; }
+    .roadmap-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem;
+    }
+    .roadmap-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .roadmap-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .roadmap-effect { font-size: 0.8rem; color: var(--accent); line-height: 1.4; }
+
+    /* ── SLIDE 4: Hotel parallelism ── */
+    .parallel-diagram {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
+    }
+    .diagram-box {
+      background: var(--surface); border-radius: 10px; padding: 1rem 1.2rem;
+    }
+    .diagram-box.before { border: 1px solid rgba(255,107,53,0.3); }
+    .diagram-box.after  { border: 1px solid rgba(0,212,255,0.3); }
+    .diagram-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      font-weight: 700; margin-bottom: 0.75rem;
+    }
+    .diagram-box.before .diagram-label { color: var(--accent2); }
+    .diagram-box.after  .diagram-label { color: var(--accent); }
+    .code-ascii {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; line-height: 1.8; color: var(--text-muted);
+    }
+    .code-ascii .red  { color: var(--accent2); }
+    .code-ascii .blue { color: var(--accent); }
+    .code-ascii .grn  { color: var(--accent3); }
+
+    /* ── SLIDE 5: Reactive Backoff ── */
+    .reactive-compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
+    }
+    .rc-card {
+      background: var(--surface); border-radius: 10px; padding: 1rem 1.2rem;
+    }
+    .rc-card.before { border: 1px solid rgba(255,107,53,0.3); }
+    .rc-card.after  { border: 1px solid rgba(0,212,255,0.3); }
+    .rc-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+      font-weight: 700; margin-bottom: 0.6rem;
+    }
+    .rc-card.before .rc-label { color: var(--accent2); }
+    .rc-card.after  .rc-label { color: var(--accent); }
+    .rc-desc { font-size: 0.85rem; line-height: 1.6; }
+    .saving-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .saving-table th {
+      background: var(--surface2); color: var(--text-muted);
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 0.5rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .saving-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .saving-table td .val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+    .saving-table td .big { color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+    /* ── SLIDE 6: Conditional skip ── */
+    .code-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .code-panel {
+      background: var(--surface); border-radius: 10px; padding: 1rem 1.2rem;
+    }
+    .code-panel.before { border: 1px solid rgba(255,107,53,0.3); }
+    .code-panel.after  { border: 1px solid rgba(0,212,255,0.3); }
+    .code-panel-label {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em;
+      font-weight: 700; margin-bottom: 0.7rem;
+    }
+    .code-panel.before .code-panel-label { color: var(--accent2); }
+    .code-panel.after  .code-panel-label { color: var(--accent); }
+    .insight-box {
+      background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.18);
+      border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.875rem;
+    }
+
+    /* ── SLIDE 7: Results ── */
+    .result-stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 1.25rem;
+    }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem 0.75rem; text-align: center;
+    }
+    .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem); font-weight: 900;
+      color: var(--accent3); display: block; line-height: 1; margin-bottom: 0.35rem;
+    }
+    .stat-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .result-table th {
+      background: var(--surface2); color: var(--text-muted);
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 0.55rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .result-table td { padding: 0.65rem 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .result-table td .good { color: var(--accent); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .check { color: var(--accent3); }
+    .user-quote {
+      margin-top: 1rem;
+      background: rgba(168,255,120,0.06); border: 1px solid rgba(168,255,120,0.2);
+      border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.875rem;
+    }
+    .user-quote .q { color: var(--accent3); font-weight: 700; }
+
+    /* ── SLIDE 8: Outro ── */
+    .slide-outro {
+      background: radial-gradient(ellipse at 50% 55%, rgba(0,212,255,0.07) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(255,107,53,0.05) 0%, transparent 50%),
+                  var(--bg);
+      text-align: center;
+    }
+    .outro-main {
+      font-size: clamp(1.6rem, 3vw + 0.5rem, 2.4rem);
+      font-weight: 900; letter-spacing: -0.02em;
+      line-height: 1.3; margin-bottom: 0.5rem;
+    }
+    .outro-main .bl { color: var(--accent); }
+    .outro-main .or { color: var(--accent2); }
+    .outro-principle { font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem; }
+    .cmp-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
+    .cmp-from {
+      background: var(--surface); border: 1px solid rgba(255,107,53,0.25);
+      border-radius: 8px; padding: 0.65rem 1rem;
+      font-size: 0.88rem; color: var(--text-muted); text-align: right;
+    }
+    .cmp-to {
+      background: var(--surface); border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 8px; padding: 0.65rem 1rem;
+      font-size: 0.88rem; color: var(--accent); font-weight: 700; text-align: left;
+    }
+    .cmp-arr { color: var(--text-muted); font-size: 1.1rem; text-align: center; }
+    .outro-footer { margin-top: 2rem; font-size: 0.85rem; color: var(--text-muted); }
+    .outro-footer strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="slide-viewport">
+
+  <!-- SLIDE 1: 표지 -->
+  <section class="slide slide-title" data-slide="1">
+    <div class="slide-inner">
+      <div class="badge">Room Audit — Speed Optimization v2</div>
+      <h1 class="title-main">
+        감사 속도<br>
+        <span class="accent">최대화</span> <span style="font-size:0.6em; color:var(--text-muted);">v2</span>
+      </h1>
+      <p class="title-sub-text">호텔 병렬 처리 + Reactive Backoff + 조건부 대기 스킵 · Mapping Hub</p>
+      <div class="title-pillars">
+        <div class="pillar">HOTEL_CONCURRENCY = 3</div>
+        <div class="pillar">fast delay: 700ms → 0ms</div>
+        <div class="pillar">Reactive Backoff</div>
+      </div>
+      <p class="title-meta">2026-03-22 &nbsp;·&nbsp; 개발: <span>David Hyun</span></p>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: 문제 정의 -->
+  <section class="slide" data-slide="2">
+    <div class="slide-inner">
+      <h2 class="slide-h">12분이 낭비되고 있었다</h2>
+      <p class="slide-sub">아무 일도 없는데 코드는 매 호텔마다 700ms 동안 멈춰 있었다.</p>
+      <div class="problem-numbers" style="margin-bottom:1rem;">
+        <div class="waste-box">
+          <span class="waste-val">700ms</span>
+          <div class="waste-lbl">호텔당 순수 대기 (fast 프리셋)</div>
+        </div>
+        <div class="waste-box">
+          <span class="waste-val">~12분</span>
+          <div class="waste-lbl">호텔 1,000개 기준 낭비 시간</div>
+        </div>
+        <div class="waste-box">
+          <span class="waste-val">~2시간</span>
+          <div class="waste-lbl">호텔 10,000개 기준 낭비 시간</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">원인 분석</div>
+        <ul class="cause-list">
+          <li class="cause-item">
+            <span class="cause-num">①</span>
+            <span><strong>Proactive 딜레이:</strong> 문제 없어도 매 호텔마다 무조건 sleep(500ms) + candidateDelay(200ms)</span>
+          </li>
+          <li class="cause-item">
+            <span class="cause-num">②</span>
+            <span><strong>호텔 순차 처리:</strong> 호텔A 완전 종료 후 호텔B 시작 — I/O 대기 중 CPU 방치</span>
+          </li>
+          <li class="cause-item">
+            <span class="cause-num">③</span>
+            <span><strong>불필요한 대기:</strong> preMappingList가 비어 candidate 조회 안 해도 candidateDelay 실행</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: 개선 방향 -->
+  <section class="slide" data-slide="3">
+    <div class="slide-inner">
+      <h2 class="slide-h">세 가지 칼로 낭비를 잘라낸다</h2>
+      <p class="slide-sub">병렬화, 반응형 대기, 불필요한 딜레이 제거 — 세 방향이 동시에 작동한다.</p>
+      <div class="roadmap-grid">
+        <div class="roadmap-card" style="border-color:rgba(0,212,255,0.3);">
+          <div class="roadmap-icon">⚡</div>
+          <div class="roadmap-title" style="color:var(--accent);">호텔 병렬 처리</div>
+          <div class="roadmap-effect">HOTEL_CONCURRENCY=3<br>Worker 3개 큐 분배<br>→ 처리량 최대 3배</div>
+        </div>
+        <div class="roadmap-card" style="border-color:rgba(255,107,53,0.3);">
+          <div class="roadmap-icon">🔄</div>
+          <div class="roadmap-title" style="color:var(--accent2);">Reactive Backoff</div>
+          <div class="roadmap-effect">평소 delay 0ms<br>429 감지 시만 대기<br>→ 낭비 대기 완전 제거</div>
+        </div>
+        <div class="roadmap-card" style="border-color:rgba(168,255,120,0.3);">
+          <div class="roadmap-icon">🎯</div>
+          <div class="roadmap-title" style="color:var(--accent3);">조건부 스킵</div>
+          <div class="roadmap-effect">preMappingList 비어있으면<br>candidateDelay 건너뜀<br>→ 논리적 낭비 제거</div>
+        </div>
+      </div>
+      <div class="insight-box" style="margin-top:1rem;">
+        세 개선이 독립적으로 동작하면서 <strong style="color:var(--accent);">복합 효과</strong>를 낸다 —
+        어느 하나만 적용해도 빠르지만, 셋이 함께일 때 체감이 극대화된다.
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: 호텔 병렬 처리 -->
+  <section class="slide" data-slide="4">
+    <div class="slide-inner">
+      <h2 class="slide-h">순서 대신 동시 — Worker 3개가 큐를 분배한다</h2>
+      <p class="slide-sub">JS 이벤트 루프 덕분에 Race Condition 없이 처리량이 3배가 됐다.</p>
+      <div class="parallel-diagram">
+        <div class="diagram-box before">
+          <div class="diagram-label">Before — 순차</div>
+          <div class="code-ascii">
+<span class="red">호텔A</span> ──처리──▶ 완료
+                    <span class="red">호텔B</span> ──처리──▶ 완료
+                                        <span class="red">호텔C</span> ──▶
+총 = A + B + C 시간
+          </div>
+        </div>
+        <div class="diagram-box after">
+          <div class="diagram-label">After — 병렬</div>
+          <div class="code-ascii">
+<span class="blue">호텔A</span> ──처리──▶ 완료
+<span class="blue">호텔B</span> ──처리──▶ 완료  <span class="grn">(동시)</span>
+<span class="blue">호텔C</span> ──처리──▶ 완료
+총 = max(A, B, C) 시간
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0.85rem;">
+        <div class="card-title">Worker 패턴 구조</div>
+        <div class="mono"><span class="kw">const</span> HOTEL_CONCURRENCY = <span class="num">3</span>;
+<span class="kw">const</span> hotelQueue = [...hotels]; <span class="cm">// 공유 큐</span>
+
+<span class="kw">const</span> workers = Array(<span class="num">3</span>).<span class="fn">fill</span>(<span class="kw">null</span>).<span class="fn">map</span>(<span class="kw">async</span> () => {
+  <span class="kw">while</span> (hotelQueue.length > <span class="num">0</span>) {
+    <span class="kw">const</span> hotel = hotelQueue.<span class="fn">shift</span>(); <span class="cm">// race condition 없음</span>
+    <span class="kw">await</span> <span class="fn">processHotel</span>(hotel);
+  }
+});
+<span class="kw">await</span> Promise.<span class="fn">all</span>(workers);</div>
+      </div>
+      <div class="insight-box">
+        <strong style="color:var(--accent);">핵심:</strong> JS 싱글 스레드 특성상 <code style="color:var(--accent3);">hotelQueue.shift()</code>는 원자적 — 별도 락 없이 안전한 큐 분배
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: Reactive Backoff -->
+  <section class="slide" data-slide="5">
+    <div class="slide-inner">
+      <h2 class="slide-h">문제가 생길 때만 멈춘다 — 평소엔 0ms</h2>
+      <p class="slide-sub">Proactive sleep을 버리고 429 응답에만 반응하는 것만으로 수십 분을 돌려받았다.</p>
+      <div class="reactive-compare" style="margin-bottom:1rem;">
+        <div class="rc-card before">
+          <div class="rc-label">Before — Proactive</div>
+          <div class="rc-desc">
+            <div class="mono"><span class="cm">// 매 호텔마다 무조건</span>
+<span class="fn">sleep</span>(<span class="num">500</span>);       <span class="cm">// hotel delay</span>
+<span class="fn">sleep</span>(<span class="num">200</span>);       <span class="cm">// candidate delay</span>
+<span class="cm">// = 700ms 항상 대기</span></div>
+          </div>
+        </div>
+        <div class="rc-card after">
+          <div class="rc-label">After — Reactive</div>
+          <div class="rc-desc">
+            <div class="mono"><span class="cm">// fast 프리셋</span>
+hotelDelayMs:     <span class="num">0</span>
+candidateDelayMs: <span class="num">0</span>
+
+<span class="cm">// 429 응답 시에만</span>
+<span class="kw">await</span> <span class="fn">sleep</span>(<span class="num">10_000</span>~<span class="num">30_000</span>)</div>
+          </div>
+        </div>
+      </div>
+      <table class="saving-table">
+        <thead>
+          <tr><th>호텔 수</th><th>절감된 순수 대기 시간</th><th>비율</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1,000개</td><td><span class="val">약 12분</span> 절감</td><td class="val">~100%</td></tr>
+          <tr><td>5,000개</td><td><span class="val">약 58분</span> 절감</td><td class="val">~100%</td></tr>
+          <tr><td>10,000개</td><td><span class="big">약 2시간</span> 절감</td><td class="big">~100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: 조건부 스킵 -->
+  <section class="slide" data-slide="6">
+    <div class="slide-inner">
+      <h2 class="slide-h">조회도 안 했는데 왜 기다리나</h2>
+      <p class="slide-sub">preMappingList가 비어있으면 대기 자체를 건너뛴다 — 작지만 논리적으로 완결된 개선.</p>
+      <div class="code-compare" style="margin-bottom:1rem;">
+        <div class="code-panel before">
+          <div class="code-panel-label">Before</div>
+          <div class="mono"><span class="kw">for</span> (<span class="kw">const</span> hotel <span class="kw">of</span> hotels) {
+  <span class="kw">const</span> list = preMappingList;
+  <span class="cm">// candidate 조회</span>
+  <span class="kw">if</span> (list.length > <span class="num">0</span>) {
+    <span class="kw">await</span> <span class="fn">fetchCandidates</span>(list);
+  }
+  <span class="cm">// 항상 대기 (조회 안해도)</span>
+  <span class="kw">await</span> <span class="fn">sleep</span>(candidateDelayMs);
+}</div>
+        </div>
+        <div class="code-panel after">
+          <div class="code-panel-label">After</div>
+          <div class="mono"><span class="kw">for</span> (<span class="kw">const</span> hotel <span class="kw">of</span> hotels) {
+  <span class="kw">const</span> list = preMappingList;
+  <span class="kw">if</span> (list.length > <span class="num">0</span>) {
+    <span class="kw">await</span> <span class="fn">fetchCandidates</span>(list);
+    <span class="cm">// 조회한 경우만 대기</span>
+    <span class="kw">await</span> <span class="fn">sleep</span>(candidateDelayMs);
+  }
+  <span class="cm">// 빈 경우 즉시 다음 호텔</span>
+}</div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <strong style="color:var(--accent);">효과:</strong> 매핑 완료 호텔 비율이 높을수록 수혜 증가 —
+        slow/normal 프리셋에서도 candidateDelayMs 절감 효과 적용됨
+      </div>
+      <div style="margin-top:0.75rem; font-size:0.82rem; color:var(--text-muted);">
+        단 <strong style="color:var(--text);">1줄 조건 추가</strong>로 논리적 낭비를 완전히 제거한 최소 변경 최대 효과 사례
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: 결과 -->
+  <section class="slide" data-slide="7">
+    <div class="slide-inner">
+      <h2 class="slide-h">사용자가 직접 확인했다</h2>
+      <p class="slide-sub">실측으로 검증된 3가지 개선의 복합 효과가 체감 속도 향상으로 연결됐다.</p>
+      <div class="result-stats">
+        <div class="stat-box">
+          <span class="stat-val">3×</span>
+          <div class="stat-desc">호텔 처리량<br>병렬 Worker 3개</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color:var(--accent);">0ms</span>
+          <div class="stat-desc">fast 프리셋<br>평소 딜레이</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color:var(--accent2);">-2h</span>
+          <div class="stat-desc">10,000개 기준<br>절감 대기 시간</div>
+        </div>
+      </div>
+      <table class="result-table">
+        <thead>
+          <tr><th>개선 항목</th><th>효과</th><th>실측</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>호텔 병렬 처리 (3개)</td>
+            <td><span class="good">최대 3배</span> 처리량 향상</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Reactive Backoff (딜레이 0)</td>
+            <td>700ms → <span class="good">0ms</span> (평소)</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>조건부 candidateDelay 스킵</td>
+            <td>빈 목록 시 즉시 진행</td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="user-quote">
+        <span class="q">"속도가 확실히 빨라졌다"</span> — 사용자 직접 실측 확인 ✓
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: 마무리 -->
+  <section class="slide slide-outro" data-slide="8">
+    <div class="slide-inner">
+      <h1 class="outro-main">
+        기다리지 말고<br>
+        <span class="or">반응</span>하라
+      </h1>
+      <p class="outro-principle">Proactive sleep → Reactive Backoff · 감사 속도 최적화의 완성형 패턴</p>
+      <div style="max-width:600px; margin:0 auto;">
+        <div class="cmp-grid">
+          <div class="cmp-from">무조건 sleep(700ms)</div>
+          <div class="cmp-arr">→</div>
+          <div class="cmp-to">429 감지 시에만 대기</div>
+        </div>
+        <div class="cmp-grid">
+          <div class="cmp-from">호텔 순차 처리</div>
+          <div class="cmp-arr">→</div>
+          <div class="cmp-to">Worker 3개 동시 병렬</div>
+        </div>
+        <div class="cmp-grid">
+          <div class="cmp-from">빈 목록도 대기</div>
+          <div class="cmp-arr">→</div>
+          <div class="cmp-to">조건부 스킵으로 즉시</div>
+        </div>
+      </div>
+      <p class="outro-footer">
+        실측 확인 + 사용자 인정 — <strong>Trip.com API 호출 구조 변경의 기준 패턴</strong>으로 확립
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<div id="slide-number"></div>
+<div id="nav-buttons">
+  <button id="btn-prev">←</button>
+  <button id="btn-next">→</button>
+</div>
+<div id="slide-dots"></div>
+
+<script>
+class Presentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.transitioning = false;
+    this.DURATION = 480;
+    this._buildDots();
+    this._loadFromHash();
+    this._setupKeyboard();
+    this._setupTouch();
+    this._setupButtons();
+    this._update();
+  }
+
+  _buildDots() {
+    const c = document.getElementById('slide-dots');
+    this.slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', `슬라이드 ${i+1}`);
+      d.addEventListener('click', () => this.goTo(i));
+      c.appendChild(d);
+    });
+    this.dots = Array.from(c.querySelectorAll('.dot'));
+  }
+
+  _loadFromHash() {
+    const m = location.hash.match(/slide-(\d+)/);
+    if (m) { const n = parseInt(m[1]) - 1; if (n >= 0 && n < this.total) this.current = n; }
+  }
+
+  _update() {
+    const prog = document.getElementById('progress-bar');
+    const num  = document.getElementById('slide-number');
+    prog.style.width = `${((this.current + 1) / this.total) * 100}%`;
+    num.textContent = `${String(this.current + 1).padStart(2,'0')} / ${String(this.total).padStart(2,'0')}`;
+    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
+    location.hash = `slide-${this.current + 1}`;
+  }
+
+  goTo(index) {
+    if (this.transitioning) return;
+    if (index < 0 || index >= this.total) return;
+    const prev = this.current;
+    if (prev === index) return;
+    this.transitioning = true;
+
+    const dir = index > prev ? 'left' : 'right';
+    const old = this.slides[prev];
+    const next = this.slides[index];
+
+    old.classList.remove('active');
+    old.classList.add(`leaving-${dir}`);
+    next.classList.remove('leaving-left', 'leaving-right');
+    next.style.transform = dir === 'left' ? 'translateX(52px)' : 'translateX(-52px)';
+    next.style.opacity = '0';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        next.style.transform = '';
+        next.style.opacity = '';
+        next.classList.add('active');
+      });
+    });
+
+    this.current = index;
+    this._update();
+
+    setTimeout(() => {
+      old.classList.remove(`leaving-${dir}`);
+      this.transitioning = false;
+    }, this.DURATION);
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  _setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+      switch(e.key) {
+        case 'ArrowRight': case ' ': e.preventDefault(); this.next(); break;
+        case 'ArrowLeft': e.preventDefault(); this.prev(); break;
+        case 'f': case 'F':
+          if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+          else document.exitFullscreen?.();
+          break;
+        case 'Home': e.preventDefault(); this.goTo(0); break;
+        case 'End': e.preventDefault(); this.goTo(this.total - 1); break;
+      }
+    });
+  }
+
+  _setupTouch() {
+    const el = document.getElementById('slide-viewport');
+    let startX = 0;
+    el.addEventListener('pointerdown', e => { startX = e.clientX; });
+    el.addEventListener('pointerup', e => {
+      const delta = startX - e.clientX;
+      if (Math.abs(delta) < 50) return;
+      delta > 0 ? this.next() : this.prev();
+    });
+  }
+
+  _setupButtons() {
+    document.getElementById('btn-prev').addEventListener('click', () => this.prev());
+    document.getElementById('btn-next').addEventListener('click', () => this.next());
+  }
+}
+
+document.querySelectorAll('.slide')[0].classList.add('active');
+const pres = new Presentation();
+</script>
+</body>
+</html>
