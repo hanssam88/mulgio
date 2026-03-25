@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>드라이런 속도 개선 핵심 3가지</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800&display=swap');
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg: #0d1b2a;
+      --accent: #3b9eff;
+      --accent-dim: #1a6dbf;
+      --text: #e8edf2;
+      --text-muted: #8fa3b8;
+      --card-bg: #1a2e45;
+      --success: #00d68f;
+      --danger: #ff6b6b;
+      --divider: rgba(59,158,255,0.2);
+
+      --text-hero: clamp(2.5rem, 6vw, 4.5rem);
+      --text-title: clamp(1.75rem, 3.5vw, 2.75rem);
+      --text-subtitle: clamp(1.125rem, 2vw, 1.5rem);
+      --text-body: clamp(1rem, 1.5vw, 1.25rem);
+      --text-caption: clamp(0.75rem, 1vw, 0.875rem);
+      --text-kpi: clamp(3rem, 8vw, 6rem);
+    }
+
+    html, body {
+      width:100%; height:100%;
+      font-family: 'Noto Sans KR', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Progress Bar ── */
+    #progress-bar {
+      position:fixed; top:0; left:0; height:3px;
+      background: var(--accent);
+      z-index:50;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Slide Viewport ── */
+    #slide-viewport { position:fixed; inset:0; overflow:hidden; }
+
+    .slide {
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transform: translateX(52px);
+      transition: opacity 0.46s ease, transform 0.46s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide.active { opacity:1; transform:translateX(0); pointer-events:auto; z-index:10; }
+    .slide.leaving-left  { opacity:0; transform:translateX(-52px); pointer-events:none; z-index:5; }
+    .slide.leaving-right { opacity:0; transform:translateX(52px);  pointer-events:none; z-index:5; }
+
+    .slide-inner {
+      width:90%; max-width:900px;
+      text-align:center;
+    }
+
+    /* ── Typography ── */
+    .hero-title { font-size: var(--text-hero); font-weight:800; line-height:1.2; letter-spacing:-0.02em; }
+    .slide-title { font-size: var(--text-title); font-weight:700; margin-bottom:1.2em; line-height:1.3; }
+    .slide-subtitle { font-size: var(--text-subtitle); font-weight:400; color: var(--text-muted); margin-bottom:1em; }
+    .slide-body { font-size: var(--text-body); line-height:1.8; color: var(--text); }
+    .slide-caption { font-size: var(--text-caption); color: var(--text-muted); }
+    .kpi-number { font-size: var(--text-kpi); font-weight:800; font-variant-numeric:tabular-nums; line-height:1; }
+
+    .accent { color: var(--accent); }
+    .success { color: var(--success); }
+    .danger { color: var(--danger); }
+    .muted { color: var(--text-muted); }
+
+    /* ── Accent Line ── */
+    .accent-line {
+      width:60px; height:3px; background:var(--accent);
+      margin:0 auto 1.5em; border-radius:2px;
+    }
+
+    /* ── Card Grid ── */
+    .card-grid { display:grid; gap:1.2em; margin-top:1.5em; }
+    .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+    @media (max-width:700px) {
+      .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border:1px solid var(--divider);
+      border-radius:14px;
+      padding:1.5em 1.2em;
+      text-align:center;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform:translateY(-2px); }
+    .card .icon { font-size:2.2rem; margin-bottom:0.5em; display:block; }
+    .card .card-title { font-size:var(--text-subtitle); font-weight:600; margin-bottom:0.4em; }
+    .card .card-desc { font-size:var(--text-body); color:var(--text-muted); line-height:1.5; }
+
+    /* ── KPI Card ── */
+    .kpi-card {
+      background: var(--card-bg);
+      border:1px solid var(--divider);
+      border-radius:14px;
+      padding:1.5em 1em;
+      text-align:center;
+    }
+    .kpi-card .kpi-label { font-size:var(--text-body); color:var(--text-muted); font-weight:400; }
+    .kpi-card .kpi-sub { font-size:var(--text-caption); color:var(--text-muted); margin-top:0.3em; }
+
+    /* ── Before / After ── */
+    .compare-box {
+      border-radius:14px;
+      padding:1.5em;
+      text-align:center;
+    }
+    .compare-box.before { background:rgba(255,107,107,0.08); border:2px solid rgba(255,107,107,0.3); }
+    .compare-box.after  { background:rgba(0,214,143,0.08);  border:2px solid rgba(0,214,143,0.3); }
+    .compare-box .compare-label {
+      font-size:var(--text-caption); font-weight:600; text-transform:uppercase;
+      letter-spacing:0.1em; margin-bottom:1em;
+    }
+    .compare-box .compare-item { font-size:var(--text-body); margin-bottom:0.7em; line-height:1.6; }
+    .compare-box .compare-item strong { font-weight:700; }
+
+    /* ── Flow Bar ── */
+    .flow-bar { display:flex; align-items:center; justify-content:center; gap:0.5em; margin:1em 0; }
+    .flow-block { height:18px; border-radius:4px; }
+    .flow-label { font-size:var(--text-caption); color:var(--text-muted); min-width:3.5em; text-align:right; }
+
+    /* ── Bullet List ── */
+    .bullet-list { list-style:none; text-align:left; max-width:600px; margin:0 auto; }
+    .bullet-list li {
+      font-size:var(--text-body); line-height:2.2;
+      padding-left:1.5em;
+      position:relative;
+    }
+    .bullet-list li::before {
+      content:''; position:absolute; left:0; top:0.85em;
+      width:8px; height:8px; border-radius:50%;
+      background: var(--accent);
+    }
+
+    /* ── Slide Number ── */
+    #slide-number {
+      position:fixed; bottom:20px; right:28px;
+      font-size:var(--text-caption); color:var(--text-muted);
+      z-index:30; font-variant-numeric:tabular-nums;
+    }
+
+    /* ── Nav Buttons ── */
+    #nav-buttons {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      display:flex; gap:12px; z-index:30;
+    }
+    #nav-buttons button {
+      width:42px; height:42px; border-radius:50%;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.15);
+      color:var(--text); font-size:1rem;
+      cursor:pointer; transition:background 0.2s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    #nav-buttons button:hover { background:rgba(255,255,255,0.18); }
+
+    /* ── Dots ── */
+    #slide-dots {
+      position:fixed; bottom:72px; left:50%; transform:translateX(-50%);
+      display:flex; gap:8px; z-index:30;
+    }
+    .dot {
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(255,255,255,0.2);
+      cursor:pointer; transition:all 0.3s;
+    }
+    .dot.active { background:var(--accent); transform:scale(1.3); }
+
+    /* ── Save Button + Modal ── */
+    #btn-save {
+      position:fixed; top:14px; right:14px; z-index:100;
+      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
+      color:var(--text); font-size:1.1rem; padding:6px 10px;
+      border-radius:8px; cursor:pointer; backdrop-filter:blur(8px);
+      transition:background 0.2s;
+    }
+    #btn-save:hover { background:rgba(255,255,255,0.22); }
+
+    #save-modal {
+      position:fixed; inset:0; z-index:200;
+      background:rgba(0,0,0,0.65); display:flex;
+      align-items:center; justify-content:center;
+    }
+    #save-modal[hidden] { display:none; }
+    #save-modal-inner {
+      background:#1e1e2e; border:1px solid rgba(255,255,255,0.15);
+      border-radius:14px; padding:28px 32px; max-width:480px; width:90%;
+      color:var(--text);
+    }
+    #save-modal-inner h3 { margin:0 0 16px; font-size:1.1rem; }
+    #save-modal-inner table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    #save-modal-inner th, #save-modal-inner td {
+      text-align:left; padding:8px 10px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    #save-modal-inner th { opacity:0.6; font-weight:600; }
+    #save-modal-close {
+      margin-top:20px; padding:8px 20px; border-radius:8px;
+      background:var(--accent); color:#fff; border:none; cursor:pointer; font-size:0.9rem;
+    }
+
+    /* ── Analogy Visual ── */
+    .analogy-visual {
+      display:flex; align-items:center; justify-content:center; gap:1.5em;
+      margin:1.5em 0; flex-wrap:wrap;
+    }
+    .analogy-icon { font-size:3.5rem; }
+    .analogy-arrow { font-size:2rem; color:var(--accent); }
+
+    /* ── Tag ── */
+    .tag {
+      display:inline-block; padding:0.25em 0.8em;
+      border-radius:20px; font-size:var(--text-caption); font-weight:600;
+      margin-bottom:0.8em;
+    }
+    .tag.blue { background:rgba(59,158,255,0.15); color:var(--accent); }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="slide-viewport">
+
+  <!-- ════ Slide 1: 타이틀 ════ -->
+  <section class="slide" data-slide="1">
+    <div class="slide-inner">
+      <p class="slide-subtitle" style="margin-bottom:0.6em;">Trip Mapping Tool</p>
+      <h1 class="hero-title">드라이런 속도 개선<br><span class="accent">핵심 3가지</span></h1>
+      <div class="accent-line" style="margin-top:1.2em;"></div>
+      <p class="slide-caption">해외채널팀 &middot; 2026년 3월</p>
+    </div>
+  </section>
+
+  <!-- ════ Slide 2: 문제 제기 ════ -->
+  <section class="slide" data-slide="2">
+    <div class="slide-inner">
+      <p class="slide-subtitle">우리가 매일 겪던 불편함</p>
+      <h2 class="slide-title">드라이런, 얼마나 걸렸을까요?</h2>
+      <div class="kpi-number danger" style="margin:0.3em 0;">5분+</div>
+      <p class="slide-body muted">객실 1,000개 기준 조회 시간</p>
+      <p class="slide-body" style="margin-top:1.5em; font-style:italic; opacity:0.7;">
+        "기다리는 동안 커피를 다 마셨습니다"
+      </p>
+    </div>
+  </section>
+
+  <!-- ════ Slide 3: 원인 분석 ════ -->
+  <section class="slide" data-slide="3">
+    <div class="slide-inner">
+      <h2 class="slide-title">왜 느렸을까요?</h2>
+      <div class="accent-line"></div>
+      <div class="card-grid cols-3">
+        <div class="card">
+          <span class="icon">🔄</span>
+          <div class="card-title danger">반복 조회</div>
+          <div class="card-desc">같은 호텔 객실 10개면<br>똑같은 정보를 10번 물어봄</div>
+        </div>
+        <div class="card">
+          <span class="icon">🚶</span>
+          <div class="card-title danger">순차 처리</div>
+          <div class="card-desc">1,000개 객실을<br>하나씩 차례로 조회</div>
+        </div>
+        <div class="card">
+          <span class="icon">⏳</span>
+          <div class="card-title danger">불필요한 대기</div>
+          <div class="card-desc">매 객실마다<br>0.1~0.3초씩 강제 대기</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 4: 개선 1 — 캐시 ════ -->
+  <section class="slide" data-slide="4">
+    <div class="slide-inner">
+      <span class="tag blue">개선 1</span>
+      <h2 class="slide-title">같은 호텔은 한 번만 조회</h2>
+      <div class="accent-line"></div>
+      <div class="analogy-visual">
+        <div>
+          <div class="analogy-icon">🏪</div>
+          <p class="slide-caption" style="margin-top:0.3em;">마트</p>
+        </div>
+        <div class="analogy-arrow">→</div>
+        <div>
+          <div class="analogy-icon">🛒</div>
+          <p class="slide-caption" style="margin-top:0.3em;">장바구니</p>
+        </div>
+      </div>
+      <p class="slide-body" style="margin-top:1em;">
+        같은 마트에서 물건 <span class="danger">10번 왕복</span>하던 걸<br>
+        <span class="success">1번에 장바구니</span>에 담아 가져옵니다
+      </p>
+      <div class="card-grid cols-2" style="max-width:500px; margin:1.5em auto 0;">
+        <div class="kpi-card">
+          <div class="kpi-label">이전</div>
+          <div class="kpi-number danger" style="font-size:clamp(1.5rem,4vw,2.5rem);">N번</div>
+          <div class="kpi-sub">같은 API 반복 호출</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">이후</div>
+          <div class="kpi-number success" style="font-size:clamp(1.5rem,4vw,2.5rem);">1번</div>
+          <div class="kpi-sub">캐시에서 즉시 반환</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 5: 개선 2 — 병렬 ════ -->
+  <section class="slide" data-slide="5">
+    <div class="slide-inner">
+      <span class="tag blue">개선 2</span>
+      <h2 class="slide-title">동시에 여러 개 처리</h2>
+      <div class="accent-line"></div>
+      <div class="analogy-visual">
+        <div>
+          <div class="analogy-icon">🧑‍💻</div>
+          <p class="slide-caption" style="margin-top:0.3em;">계산대 1개</p>
+        </div>
+        <div class="analogy-arrow">→</div>
+        <div style="display:flex; gap:0.2em;">
+          <div class="analogy-icon">🧑‍💻</div>
+          <div class="analogy-icon">🧑‍💻</div>
+          <div class="analogy-icon">🧑‍💻</div>
+          <div class="analogy-icon">🧑‍💻</div>
+          <div class="analogy-icon">🧑‍💻</div>
+        </div>
+      </div>
+      <p class="slide-body" style="margin-top:0.5em;">
+        <span class="danger">1개 줄</span>에 1,000명이 서있던 걸<br>
+        <span class="success">5개 줄</span>로 나눠서 동시에 처리합니다
+      </p>
+      <div style="max-width:500px; margin:1.5em auto 0; text-align:left;">
+        <div class="flow-bar">
+          <span class="flow-label danger">이전</span>
+          <div class="flow-block" style="width:100%; background:var(--danger); opacity:0.7;"></div>
+        </div>
+        <div class="flow-bar">
+          <span class="flow-label success">이후</span>
+          <div class="flow-block" style="width:20%; background:var(--success);"></div>
+          <div class="flow-block" style="width:20%; background:var(--success);"></div>
+          <div class="flow-block" style="width:20%; background:var(--success);"></div>
+          <div class="flow-block" style="width:20%; background:var(--success);"></div>
+          <div class="flow-block" style="width:20%; background:var(--success);"></div>
+        </div>
+        <p class="slide-caption" style="text-align:center; margin-top:0.5em;">같은 시간에 5배 더 많이 처리</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 6: 개선 3 — 대기 제거 ════ -->
+  <section class="slide" data-slide="6">
+    <div class="slide-inner">
+      <span class="tag blue">개선 3</span>
+      <h2 class="slide-title">불필요한 대기 시간 제거</h2>
+      <div class="accent-line"></div>
+      <div class="analogy-visual">
+        <div>
+          <div class="analogy-icon">🚦</div>
+          <p class="slide-caption" style="margin-top:0.3em;">빨간불 대기</p>
+        </div>
+        <div class="analogy-arrow">→</div>
+        <div>
+          <div class="analogy-icon">🟢</div>
+          <p class="slide-caption" style="margin-top:0.3em;">신호 없는 직진</p>
+        </div>
+      </div>
+      <p class="slide-body" style="margin-top:1em;">
+        객실 1,000개 &times; <span class="danger">0.1초 대기</span> = 순수 대기만 <span class="danger">100초</span><br>
+        조회만 하는 드라이런에서는 대기가 <span class="success">불필요</span>합니다
+      </p>
+      <div class="card-grid cols-2" style="max-width:500px; margin:1.5em auto 0;">
+        <div class="kpi-card">
+          <div class="kpi-label">이전</div>
+          <div class="kpi-number danger" style="font-size:clamp(1.5rem,4vw,2.5rem);">100초</div>
+          <div class="kpi-sub">아무것도 안 하고 기다림</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">이후</div>
+          <div class="kpi-number success" style="font-size:clamp(1.5rem,4vw,2.5rem);">0초</div>
+          <div class="kpi-sub">바로 다음 객실 처리</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 7: Before / After ════ -->
+  <section class="slide" data-slide="7">
+    <div class="slide-inner">
+      <h2 class="slide-title">전과 후, 이렇게 달라졌습니다</h2>
+      <div class="accent-line"></div>
+      <div class="card-grid cols-2" style="max-width:700px; margin:0 auto;">
+        <div class="compare-box before">
+          <div class="compare-label danger">Before</div>
+          <div class="compare-item"><strong>드라이런 조회</strong><br>5분 이상</div>
+          <div class="compare-item"><strong>매핑 적용</strong><br>50건에 35초</div>
+          <div class="compare-item"><strong>화면 렌더링</strong><br>1,000행 전체 표시</div>
+        </div>
+        <div class="compare-box after">
+          <div class="compare-label success">After</div>
+          <div class="compare-item"><strong>드라이런 조회</strong><br>약 1분</div>
+          <div class="compare-item"><strong>매핑 적용</strong><br>50건에 5초</div>
+          <div class="compare-item"><strong>화면 렌더링</strong><br>보이는 부분만 표시</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 8: 성과 대시보드 ════ -->
+  <section class="slide" data-slide="8">
+    <div class="slide-inner">
+      <h2 class="slide-title">성과 한눈에 보기</h2>
+      <div class="accent-line"></div>
+      <div class="card-grid cols-4" style="max-width:800px; margin:0 auto;">
+        <div class="kpi-card">
+          <div class="kpi-number success" style="font-size:clamp(2rem,5vw,3.5rem);">80%</div>
+          <div class="kpi-label">조회 시간</div>
+          <div class="kpi-sub">단축</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-number success" style="font-size:clamp(2rem,5vw,3.5rem);">7배</div>
+          <div class="kpi-label">매핑 적용</div>
+          <div class="kpi-sub">속도 향상</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-number success" style="font-size:clamp(2rem,5vw,3.5rem);">90%</div>
+          <div class="kpi-label">화면 부하</div>
+          <div class="kpi-sub">감소</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-number accent" style="font-size:clamp(2rem,5vw,3.5rem);">16건</div>
+          <div class="kpi-label">병목 해결</div>
+          <div class="kpi-sub">총 개선 건수</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ Slide 9: 운영팀 체감 ════ -->
+  <section class="slide" data-slide="9">
+    <div class="slide-inner">
+      <h2 class="slide-title">운영팀이 체감하는 변화</h2>
+      <div class="accent-line"></div>
+      <ul class="bullet-list">
+        <li>드라이런 결과를 <strong>빠르게 확인</strong>하고 바로 판단</li>
+        <li>더 많은 호텔을 <strong>짧은 시간</strong>에 검토 가능</li>
+        <li>기다림 없이 <strong>다음 작업</strong>으로 바로 이동</li>
+        <li>객실 1,000개 이상도 <strong>화면 버벅임 없이</strong> 확인</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ════ Slide 10: 마무리 ════ -->
+  <section class="slide" data-slide="10">
+    <div class="slide-inner">
+      <p class="slide-subtitle" style="margin-bottom:0.5em;">핵심은 단 하나</p>
+      <h1 class="hero-title">
+        기다리는 시간을<br><span class="accent">없앴습니다</span>
+      </h1>
+      <div class="accent-line" style="margin-top:1.2em;"></div>
+      <p class="slide-body muted" style="margin-top:1.5em;">감사합니다</p>
+      <p class="slide-caption" style="margin-top:2em; opacity:0.5;">Q&A</p>
+    </div>
+  </section>
+
+</div>
+
+<div id="slide-number"></div>
+
+<div id="nav-buttons">
+  <button id="btn-prev" aria-label="이전 슬라이드">&#8592;</button>
+  <button id="btn-next" aria-label="다음 슬라이드">&#8594;</button>
+</div>
+
+<div id="slide-dots"></div>
+
+<button id="btn-save" title="이미지 저장">&#128229;</button>
+
+<div id="save-modal" hidden>
+  <div id="save-modal-inner">
+    <h3>슬라이드 저장 방법</h3>
+    <table>
+      <tr><th>방법</th><th>설명</th></tr>
+      <tr><td>PDF 저장</td><td>브라우저 인쇄(Ctrl+P) &rarr; "PDF로 저장" 선택</td></tr>
+      <tr><td>PNG 변환</td><td>PDF 저장 후 ilovepdf.com 또는 사진 앱에서 PNG 추출</td></tr>
+      <tr><td>현재 슬라이드</td><td>이 HTML 파일을 브라우저에서 열고 스크린샷</td></tr>
+    </table>
+    <p style="margin-top:12px;font-size:0.85em;opacity:0.7;">
+      가장 빠른 공유: PDF 저장 후 카카오톡에 파일 전송
+    </p>
+    <button id="save-modal-close">닫기</button>
+  </div>
+</div>
+
+<script>
+class Presentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.transitioning = false;
+    this.DURATION = 480;
+
+    this._buildDots();
+    this._loadFromHash();
+    this._setupKeyboard();
+    this._setupTouch();
+    this._setupButtons();
+    this._setupSaveModal();
+  }
+
+  goTo(index, instant) {
+    if (index < 0 || index >= this.total || index === this.current) return;
+    if (this.transitioning && !instant) return;
+
+    this.transitioning = true;
+    var prev = this.slides[this.current];
+    var next = this.slides[index];
+    var direction = index > this.current ? 'left' : 'right';
+
+    next.classList.remove('leaving-left', 'leaving-right');
+    next.style.transition = 'none';
+    next.style.transform = direction === 'left' ? 'translateX(52px)' : 'translateX(-52px)';
+    next.style.opacity = '0';
+    next.offsetHeight;
+
+    next.style.transition = '';
+    next.classList.add('active');
+    next.style.transform = '';
+    next.style.opacity = '';
+
+    prev.classList.remove('active');
+    prev.classList.add(direction === 'left' ? 'leaving-left' : 'leaving-right');
+
+    this.current = index;
+    this._updateUI();
+    location.hash = 'slide-' + (index + 1);
+
+    var self = this;
+    setTimeout(function() {
+      prev.classList.remove('leaving-left', 'leaving-right');
+      self.transitioning = false;
+    }, this.DURATION);
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  _updateUI() {
+    document.getElementById('progress-bar').style.width =
+      ((this.current + 1) / this.total * 100) + '%';
+
+    document.getElementById('slide-number').textContent =
+      String(this.current + 1).padStart(2, '0') + ' / ' + String(this.total).padStart(2, '0');
+
+    var dots = document.querySelectorAll('.dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', i === this.current);
+    }
+  }
+
+  _buildDots() {
+    var container = document.getElementById('slide-dots');
+    for (var i = 0; i < this.total; i++) {
+      var dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.dataset.index = i;
+      dot.addEventListener('click', function(e) {
+        this.goTo(parseInt(e.target.dataset.index));
+      }.bind(this));
+      container.appendChild(dot);
+    }
+  }
+
+  _loadFromHash() {
+    var match = location.hash.match(/slide-(\d+)/);
+    var index = match ? parseInt(match[1], 10) - 1 : 0;
+    if (index < 0 || index >= this.total) index = 0;
+    this.slides[index].classList.add('active');
+    this.current = index;
+    this._updateUI();
+  }
+
+  _setupKeyboard() {
+    var self = this;
+    document.addEventListener('keydown', function(e) {
+      if (['INPUT', 'TEXTAREA'].indexOf(e.target.tagName) !== -1) return;
+      switch (e.key) {
+        case 'ArrowRight': case ' ':
+          e.preventDefault(); self.next(); break;
+        case 'ArrowLeft':
+          e.preventDefault(); self.prev(); break;
+        case 'f': case 'F':
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen && document.exitFullscreen();
+          }
+          break;
+        case 'Home':
+          e.preventDefault(); self.goTo(0); break;
+        case 'End':
+          e.preventDefault(); self.goTo(self.total - 1); break;
+      }
+    });
+  }
+
+  _setupTouch() {
+    var el = document.getElementById('slide-viewport');
+    var startX = 0;
+    var self = this;
+    el.addEventListener('pointerdown', function(e) { startX = e.clientX; });
+    el.addEventListener('pointerup', function(e) {
+      var delta = startX - e.clientX;
+      if (Math.abs(delta) < 50) return;
+      delta > 0 ? self.next() : self.prev();
+    });
+  }
+
+  _setupButtons() {
+    var self = this;
+    document.getElementById('btn-prev').addEventListener('click', function() { self.prev(); });
+    document.getElementById('btn-next').addEventListener('click', function() { self.next(); });
+  }
+
+  _setupSaveModal() {
+    var modal = document.getElementById('save-modal');
+    var close = document.getElementById('save-modal-close');
+    document.getElementById('btn-save').addEventListener('click', function() { modal.hidden = false; });
+    close.addEventListener('click', function() { modal.hidden = true; });
+    modal.addEventListener('click', function(e) { if (e.target === modal) modal.hidden = true; });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') modal.hidden = true; });
+  }
+}
+
+new Presentation();
+</script>
+</body>
+</html>
